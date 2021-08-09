@@ -1,0 +1,1099 @@
+﻿@model DraperyOrderFormModel
+@using Nop.Web.Models.Common;
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+
+    //title
+    Html.AddTitleParts("Sheer Rail Roll Order Form");
+    Html.AddScriptParts("https://code.jquery.com/ui/1.12.1/jquery-ui.js");
+    Html.AddScriptParts("https://cdn.jsdelivr.net/npm/mathjs@8.0.1/lib/browser/math.min.js");
+    Html.AddCssFileParts("//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css");
+}
+@using (Html.BeginForm())
+{
+    <div class="custom-page-box-border-less-div">
+        <div class="breadcrumbs">
+            <ol class="breadcrumb">
+
+                <li><a href="@Url.RouteUrl("HomePage")" title="@T("Categories.Breadcrumb.Top")">@T("Categories.Breadcrumb.Top")</a></li>
+                <li class="active">Sheer Rail roll Order Form</li>
+
+            </ol>
+        </div>
+    </div>
+    <div>
+        <h3 class="pull-left">
+            RT, RTB, & PLEATED SHEER RAIL ROLL ORDER FORM
+        </h3>
+        @*<a class="btn btn-primary pull-right" href="SHEER RAIL ROLL ORDER FORM.xlsx" target="_blank">Download Form (XLSX)</a>*@
+    </div>
+    <div class="custom-page-box-div" style="clear:both">
+        @Html.AntiForgeryToken()
+        <div class="text-danger">
+            @ViewBag.Message
+            @Html.ValidationSummary(true)
+        </div>
+        <div class="product-details">
+            <table style="width:100%; border-spacing:5px; border-collapse:separate">
+                <tr>
+                    <td style="width:15%">Designer*</td>
+                    <td>@Html.TextBoxFor(x => x.Designer, new { @class = "col-sm-7" })</td>
+                </tr>
+                <tr>
+                    <td>Side Mark*</td>
+                    <td>@Html.TextBoxFor(x => x.SideMark, new { @class = "col-sm-7" })</td>
+                </tr>
+                <tr>
+                    <td>Phone*</td>
+                    <td>@Html.TextBoxFor(x => x.Phone, new { @class = "col-sm-7" })</td>
+                </tr>
+                <tr>
+                    <td>Order Date</td>
+                    <td>@Html.TextBoxFor(x => x.OrderDate, new { @class = "col-sm-7, datepicker", autocomplete = "off" })</td>
+                </tr>
+                <tr>
+                    <td>Due Date</td>
+                    <td>@Html.TextBoxFor(x => x.DueDate, new { @class = "col-sm-7, datepicker", autocomplete = "off" })</td>
+                </tr>
+                <tr>
+                    <td>Note</td>
+                    <td>@Html.TextAreaFor(x => x.Note, new { @class = "col-sm-7" })</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div>
+        <h4>
+            Order Detail
+        </h4>
+    </div>
+    <div class="custom-page-box-div" style="clear:both">
+        <div class="product-details" style="margin-bottom:0">
+            <button type="button" class="btn btn-primary" id="btnAddDetail">New Order Detail</button>
+            <button type="button" class="btn btn-primary" id="btnReviewDetail">Review</button>
+            @Html.HiddenFor(m => m.OrderDetailJsonStr, new { id = "hdOrderDetail" })
+            <table style="width:100%" class="table table-bordered" id="tbOrderDetail">
+                <thead>
+                    <tr>
+                        <th>Actions</th>
+                        <th>Line</th>
+                        <th>Room Location</th>
+                        <th>Qty</th>
+                        <th>Style</th>
+                        <th>Type</th>
+                        <th>BR-BR</th>
+                        <th>Finished Length</th>
+                    </tr>
+
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <div style="margin-left:170px">
+        @Html.HiddenFor(m => m.DisplayCaptcha)
+        @if (Model.DisplayCaptcha)
+        {
+            <div class="captcha-box">
+                @Html.Raw(Html.GenerateCaptcha())
+            </div>
+        }
+    </div>
+    <div class="text-center"><input type="submit" class="btn btn-primary" value="Download to Print" name="print" /> <input type="submit" class="btn btn-primary" value="Submit" /></div>
+}
+<div id="dialogOrderDetail">
+    <p class="validateTips"></p>
+    <table style="width:100%; border-spacing:5px; border-collapse:separate">
+        <tr>
+            <td>Line:</td>
+            <td><label id="lbLine">1</label></td>
+        </tr>
+        <tr>
+            <td>Room Location:</td>
+            <td><input type="text" id="txtRoomLocation" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Qty*:</td>
+            <td><input type="number" id="txtQty" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Style:</td>
+            <td>
+                <select id="ddlStyle">
+                    <option value="Cartridge">Cartridge</option>
+                    <option value="Goblet">Goblet</option>
+                    <option value="French">French</option>
+                    <option value="2-Finger">2-Finger</option>
+                    <option value="Pinch (3 Finger)">Pinch (3 Finger)</option>
+                    <option value="5-Finger">5-Finger</option>
+                    <option value="Butterfly">Butterfly</option>
+                    <option value="Windsor">Windsor</option>
+                    <option value="RT">RT</option>
+                    <option value="RTB">RTB</option>
+
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Type:</td>
+            <td>
+                <select id="ddlType">
+                    <option value="1 Way Left">1 Way Left</option>
+                    <option value="1 Way Right">1 Way Right</option>
+                    <option value="Split Draw">Split Draw</option>
+
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>BR-BR*:</td>
+            <td><input type="text" id="txtBRBR" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Return:</td>
+            <td><input type="text" id="txtReturn" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Overlap:</td>
+            <td><input type="text" id="txtOverlap" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Hoodset:</td>
+            <td>
+                <select id="ddlHoodset">
+                    <option value="">--None--</option>
+                    <option value="3">3" - for regular traverse</option>
+                    <option value="1 1/2">1 ½" - for rods with rings</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Fullness*:</td>
+            <td><input type="number" id="txtFullness" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Finished Length*:</td>
+            <td><input type="text" id="txtFinishedLength" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Finished Width per Panel*:</td>
+            <td><input type="text" id="txtFinishedWidth" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Left No.Width:</td>
+            <td><input type="text" id="txtLeftNoWidth" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Right No.Width:</td>
+            <td><input type="text" id="txtRightNoWidth" class="col-sm-12" /></td>
+        </tr>
+
+        <tr>
+            <td>Left Panel - No. of Pleats:</td>
+            <td><input type="text" id="txtLeftNoOfPleats" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Left Panel - Pleat:</td>
+            <td><input type="text" id="txtLeftPleat" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Left Panel - Space:</td>
+            <td><input type="text" id="txtLeftSpace" class="col-sm-12" /></td>
+        </tr>
+
+        <tr>
+            <td>Right Panel - No. of Pleats:</td>
+            <td><input type="text" id="txtRightNoOfPleats" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Right Panel - Pleat:</td>
+            <td><input type="text" id="txtRightPleat" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Right Panel - Space:</td>
+            <td><input type="text" id="txtRightSpace" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Yard Left:</td>
+            <td><input type="text" id="txtYardLeft" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Yard Right:</td>
+            <td><input type="text" id="txtYardRight" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Fabric Name & Color:</td>
+            <td><input type="text" id="txFabricNameColor" class="col-sm-12" /></td>
+        </tr>
+
+        <tr>
+            <td>Top Header:</td>
+            <td><input type="text" id="txtTopHeader" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Top Pocket:</td>
+            <td><input type="text" id="txtTopPocket" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Bottom Header:</td>
+            <td><input type="text" id="txtBottomHeader" class="col-sm-12" /></td>
+        </tr>
+        <tr>
+            <td>Bottom Pocket:</td>
+            <td><input type="text" id="txtBottomPocket" class="col-sm-12" /></td>
+        </tr>
+    </table>
+
+</div>
+<div id="dialogReviewOrderDetail" title="Review Order Detail">
+    <table style="width:100%" class="table table-bordered" id="tbReviewOrderDetail">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Actions</th>
+                <th>Line</th>
+                <th>Room Locations</th>
+                <th>Qty</th>
+                <th>Style</th>
+                <th>Type</th>
+                <th>BR-BR</th>
+                <th>Return</th>
+                <th>Overlap</th>
+                <th>Hoodset</th>
+                <th>Fullness</th>
+                <th>Finished Length</th>
+            </tr>
+
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<script>
+    var orderDetails = [];
+    var isAdding = true;
+    var dialog,
+        dialogReview,
+        tips = $(".validateTips"),
+        _line = $("#lbLine"),
+        _roomLocation = $('#txtRoomLocation'),
+        _qty = $('#txtQty'),
+        _style = $('#ddlStyle'),
+        _type = $('#ddlType'),
+        _brbr = $('#txtBRBR'),
+        _return = $('#txtReturn'),
+        _overlap = $('#txtOverlap'),
+        _hoodset = $('#ddlHoodset'),
+        _fullness = $('#txtFullness'),
+        _finishedLength = $('#txtFinishedLength'),
+        _fabricNameColor = $('#txFabricNameColor'),
+        _topHeader = $('#txtTopHeader'),
+        _topPocket = $('#txtTopPocket'),
+        _bottomHeader = $('#txtBottomHeader'),
+        _bottomPocket = $('#txtBottomPocket'),
+        _finishedWidth = $('#txtFinishedWidth'),
+        _leftNoWidth = $('#txtLeftNoWidth'),
+        _rightNoWidth = $('#txtRightNoWidth'),
+        _leftSpace = $('#txtLeftSpace'),
+        _leftNoOfPleats = $('#txtLeftNoOfPleats'),
+        _leftPleat = $('#txtLeftPleat'),
+        _rightSpace = $('#txtRightSpace'),
+        _rightNoOfPleats = $('#txtRightNoOfPleats'),
+        _rightPleat = $('#txtRightPleat'),
+        _yardLeft = $('#txtYardLeft'),
+        _yardRight = $('#txtYardRight'),
+
+        allFields = $([]).add(_roomLocation).add(_qty).add(_brbr).add(_return).add(_overlap).add(_fullness).add(_finishedLength).add(_topHeader).add(_topPocket).add(_bottomHeader).add(_bottomPocket)
+            .add(_finishedWidth).add(_leftNoWidth).add(_rightNoWidth).add(_leftSpace).add(_leftNoOfPleats).add(_leftPleat).add(_rightSpace).add(_rightNoOfPleats).add(_rightPleat)
+            .add(_yardLeft).add(_yardRight)
+        ;
+    $(function () {
+        $(".datepicker").datepicker();
+        dialog = $("#dialogOrderDetail").dialog({
+            autoOpen: false,
+            modal: true,
+            height: "auto",
+            width: 500,
+            buttons: {
+                "Save": saveOrderDetailAndClose,
+                "Save & Add New": saveAndNewDetail,
+                "Save & Review": saveAndReview,
+                Cancel: function () {
+                    dialog.dialog("close");
+                }
+            }
+        });
+        dialogReview = $("#dialogReviewOrderDetail").dialog({
+            autoOpen: false,
+            modal: true,
+            height: "auto",
+            width: 1050,
+            buttons: {
+                Close: function () {
+                    dialogReview.dialog("close");
+                }
+            }
+        });
+        $("#btnAddDetail").click(function () {
+            if (orderDetails.length >= 9) {
+                alert('We allow only 9 line items in an Order, if you need more than 9 then please create another order or call us!');
+            }
+            else {
+                var obj = {
+                    Line: orderDetails.length + 1,
+                    RoomLocation: "",
+                    Qty: 1,
+                    Style: "Cartridge",
+                    Type: "1 Way Left",
+                    BRBR: "",
+                    Return: "",
+                    Overlap: "",
+                    Hoodset: "",
+                    Fullness: "",
+                    FinishedLength: "",
+                    FabricNameColor: "",
+                    TopHeader: "",
+                    TopPocket: "",
+                    BottomHeader: "",
+                    BottomPocket: "",
+                    FinishedWidth: "",
+                    LeftNoWidth: "",
+                    RightNoWidth: "",
+                    LeftSpace: "",
+                    LeftNoOfPleats: "",
+                    LeftPleat: "",
+                    RightSpace: "",
+                    RightNoOfPleats: "",
+                    RightPleat: "",
+                    YardLeft: "",
+                    YardRight: ""
+                }
+                isAdding = true;
+                loadDetail(obj);
+                allFields.removeClass("ui-state-error");
+                tips.empty();
+                $("#dialogOrderDetail").dialog("option", "title", "Add Order Detail").dialog("open");
+            }
+
+        });
+        $("#tbOrderDetail a.edit").live("click", function () {
+            var index = parseInt($(this).attr("myindex"));
+            var obj = orderDetails[index];
+            obj.Line = index + 1;
+            isAdding = false;
+            loadDetail(obj);
+            allFields.removeClass("ui-state-error");
+            $("#dialogOrderDetail").dialog("option", "title", "Edit Order Detail").dialog("open");
+            return false;
+        });
+        $("#tbOrderDetail a.delete").live("click", function () {
+            if (confirm("Do you want to delete this item?")) {
+                orderDetails.splice(parseInt($(this).attr("myindex")), 1);
+                $("#hdOrderDetail").val(JSON.stringify(orderDetails));
+                loadGrid();
+            }
+
+            return false;
+        });
+        $("#tbReviewOrderDetail a.edit").live("click", function () {
+            var index = parseInt($(this).attr("myindex"));
+            var obj = orderDetails[index];
+            obj.Line = index + 1;
+            isAdding = false;
+            loadDetail(obj);
+            allFields.removeClass("ui-state-error");
+            $("#dialogOrderDetail").dialog("option", "title", "Edit Order Detail").dialog("open");
+            $("#dialogReviewOrderDetail").dialog("close");
+            return false;
+        });
+        $("#tbReviewOrderDetail a.delete").live("click", function () {
+            if (confirm("Do you want to delete this item?")) {
+                orderDetails.splice(parseInt($(this).attr("myindex")), 1);
+                $("#hdOrderDetail").val(JSON.stringify(orderDetails));
+                loadGrid();
+                loadReviewGrid();
+            }
+
+            return false;
+        });
+        $("#btnReviewDetail").click(function () {
+            loadReviewGrid();
+            dialogReview.dialog("open");
+        });
+        $("a.toggle-btn").live('click', function () {
+            if ($(this).hasClass('collapsed')) {
+                $(this).children('i').removeClass('glyphicon-minus-sign').addClass('glyphicon-plus-sign');
+            }
+            else {
+                $(this).children('i').removeClass('glyphicon-plus-sign').addClass('glyphicon-minus-sign');
+            }
+        });
+        $("#ddlType").change(function () {
+            toggleType($(this).val());
+
+        });
+        $(document).on("change", "#txtBRBR, #txtOverlap, #txtReturn, #ddlType", function () {
+            CalculateFinishedWidth();
+        });
+        $(document).on("change", "#txtBRBR, #txtOverlap, #txtReturn, #ddlType, #txtFullness", function () {
+            CalculateNoWidth();
+        });
+        $(document).on("change", "#txtLeftNoWidth, #txtRightNoWidth", function () {
+            CalculateNoOfPleats();
+            CalculateYard();
+        });
+        $(document).on("change", "#txtLeftNoOfPleats, #txtRightNoOfPleats, #txtFinishedWidth", function () {
+            CalculateSpace();
+            CalculatePleat();
+        });
+        var s = 1 / 16, d = [];
+        for (var i = s, n = 0; i < 1; i += s, n++) {
+            d[n] = i
+        }
+        function getFraction16(num) {
+            num = Math.round(num * 16) / 16;
+            return (num + "")
+                .split(".")
+                .reduce(function (a, b, index, arr) {
+                    var curr = +("." + b), j;
+                    for (var i = 0; i < d.length; i++) {
+                        if (Math.min(curr, d[i]) === curr) {
+                            j = " " + (i + 1) + "/" + (d.length + 1);
+                            break;
+                        }
+                    };
+                    return j === 0 ? +a + Math.round(curr) : a + j;
+                })
+        }
+        function CalculateFinishedWidth() {
+            if (isNumberOrFraction(_brbr)
+                && isNumberOrFraction(_return)
+                && isNumberOrFraction(_overlap)
+            ) {
+                var finishedWidth = 0;
+                switch (_type.val()) {
+                    case "1 Way Left":
+                    case "1 Way Right":
+                        finishedWidth = math.fraction(_brbr.val()) + math.fraction(_return.val()) + math.fraction(_overlap.val()) + 0.5;
+                        break;
+                    default:
+                        finishedWidth = (math.fraction(_brbr.val()) + math.fraction(_return.val()) * 2 + math.fraction(_overlap.val()) * 2) / 2 + 0.5;
+                }
+                _finishedWidth.val(getFraction16(finishedWidth));
+                return true;
+            }
+            _finishedWidth.val("");
+            return false;
+        }
+        function CalculateNoWidth() {
+            _leftNoWidth.val("");
+            _rightNoWidth.val("");
+            if (isNumberOrFraction(_brbr) &&
+                isNumberOrFraction(_fullness) &&
+                isNumberOrFraction(_return) &&
+                isNumberOrFraction(_overlap)
+            ) {
+                var noWidth = 0;
+                if (_type.val() === "Split Draw") {
+                    noWidth = getCeiling((((math.fraction(_brbr.val()) * math.fraction(_fullness.val())) + ((math.fraction(_return.val()) + math.fraction(_overlap.val())) * 2)) / 54) / 2);
+                    _leftNoWidth.val(getFraction16(noWidth));
+                    _rightNoWidth.val(getFraction16(noWidth));
+                }
+                else {
+                    noWidth = getCeiling(((math.fraction(_brbr.val()) * math.fraction(_fullness.val())) + math.fraction(_return.val()) + math.fraction(_overlap.val())) / 54);
+
+                    if (_type.val() === "1 Way Left") {
+                        _leftNoWidth.val(getFraction16(noWidth));
+                    }
+                    if (_type.val() === "1 Way Right") {
+                        _rightNoWidth.val(getFraction16(noWidth));
+                    }
+                }
+                _leftNoWidth.trigger("change");
+                return true;
+            }
+            _leftNoWidth.trigger("change");
+            return false;
+        }
+        function CalculateNoOfPleats() {
+            _leftNoOfPleats.val("");
+            _rightNoOfPleats.val("");
+            var leftNoOfPleats = 0;
+            var rightNoOfPleats = 0;
+            var result = false;
+            if ((_type.val() === "1 Way Left" || _type.val() === "Split Draw")
+                && isNumberOrFraction(_leftNoWidth)) {
+                leftNoOfPleats = Math.floor(math.fraction(_leftNoWidth.val()) * 5);
+                _leftNoOfPleats.val(leftNoOfPleats);
+                result = true;
+            }
+            if ((_type.val() === "1 Way Right" || _type.val() === "Split Draw")
+                && isNumberOrFraction(_rightNoWidth)) {
+                rightNoOfPleats = Math.floor(math.fraction(_rightNoWidth.val()) * 5);
+                _rightNoOfPleats.val(rightNoOfPleats);
+                result = true;
+            }
+            _leftNoOfPleats.trigger("change");
+            return result;
+        }
+        function CalculateSpace() {
+            _leftSpace.val("");
+            _rightSpace.val("");
+            var leftSpace = 0;
+            var rightSpace = 0;
+            var result = false;
+            if ((_type.val() === "1 Way Left" || _type.val() === "Split Draw")
+                && isNumberOrFraction(_leftNoOfPleats)
+                && isNumberOrFraction(_finishedWidth)
+                && isNumberOrFraction(_return)
+                && isNumberOrFraction(_overlap)
+            ) {
+                leftSpace = (math.fraction(_finishedWidth.val()) - (math.fraction(_return.val()) + math.fraction(_overlap.val()))) / (math.fraction(_leftNoOfPleats.val()) - 1);
+                _leftSpace.val(getFraction16(leftSpace));
+                result = true;
+            }
+            if ((_type.val() === "1 Way Right" || _type.val() === "Split Draw")
+                && isNumberOrFraction(_rightNoOfPleats)
+                && isNumberOrFraction(_finishedWidth)
+                && isNumberOrFraction(_return)
+                && isNumberOrFraction(_overlap)
+            ) {
+                rightSpace = (math.fraction(_finishedWidth.val()) - (math.fraction(_return.val()) + math.fraction(_overlap.val()))) / (math.fraction(_rightNoOfPleats.val()) - 1);
+                _rightSpace.val(getFraction16(rightSpace));
+                result = true;
+            }
+
+            return result;
+
+        }
+        function CalculatePleat() {
+            _leftPleat.val("");
+            _rightPleat.val("");
+            var leftPleat = 0;
+            var rightPleat = 0;
+            var result = false;
+            if ((_type.val() === "1 Way Left" || _type.val() === "Split Draw")
+                && isNumberOrFraction(_leftNoOfPleats)
+                && isNumberOrFraction(_finishedWidth)
+                && isNumberOrFraction(_leftNoWidth)
+            ) {
+                leftPleat = ((math.fraction(_leftNoWidth.val()) * 54) - (math.fraction(_finishedWidth.val()) + 5)) / math.fraction(_leftNoOfPleats.val());
+                _leftPleat.val(getFraction16(leftPleat));
+                result = true;
+            }
+            if ((_type.val() === "1 Way Right" || _type.val() === "Split Draw")
+                && isNumberOrFraction(_rightNoOfPleats)
+                && isNumberOrFraction(_finishedWidth)
+                && isNumberOrFraction(_rightNoWidth)
+            ) {
+                rightPleat = ((math.fraction(_rightNoWidth.val()) * 54) - (math.fraction(_finishedWidth.val()) + 5)) / math.fraction(_rightNoOfPleats.val());
+                _rightPleat.val(getFraction16(rightPleat));
+                result = true;
+            }
+            return result;
+        }
+        function CalculateYard() {
+            _yardLeft.val("");
+            _yardRight.val("");
+            var yardLeft = 0;
+            var yardRight = 0;
+            var result = false;
+            if ((_type.val() === "1 Way Left" || _type.val() === "Split Draw")
+                && isNumberOrFraction(_leftNoWidth)
+            ) {
+                yardLeft = (math.fraction(_leftNoWidth.val()) * 54) / 36;
+                _yardLeft.val(getFraction16(yardLeft));
+                result = true;
+            }
+            if ((_type.val() === "1 Way Right" || _type.val() === "Split Draw")
+                && isNumberOrFraction(_rightNoWidth)
+            ) {
+                yardRight = (math.fraction(_rightNoWidth.val()) * 54) / 36;
+                _yardRight.val(getFraction16(yardRight));
+                result = true;
+            }
+            return result;
+        }
+        function getCeiling(input) {
+            return Math.ceil(4 * input) / 4;
+        }
+        function toggleType(val) {
+            switch (val) {
+                case "1 Way Left":
+                    _leftNoWidth.prop('disabled', false);
+                    _leftSpace.prop('disabled', false);
+                    _leftNoOfPleats.prop('disabled', false);
+                    _leftPleat.prop('disabled', false);
+                    _rightNoWidth.prop('disabled', true);
+                    _rightSpace.prop('disabled', true);
+                    _rightNoOfPleats.prop('disabled', true);
+                    _rightPleat.prop('disabled', true);
+                    _yardLeft.prop('disabled', false);
+                    _yardRight.prop('disabled', true);
+
+                    break;
+                case "1 Way Right":
+                    _leftNoWidth.prop('disabled', true);
+                    _leftSpace.prop('disabled', true);
+                    _leftNoOfPleats.prop('disabled', true);
+                    _leftPleat.prop('disabled', true);
+                    _rightNoWidth.prop('disabled', false);
+                    _rightSpace.prop('disabled', false);
+                    _rightNoOfPleats.prop('disabled', false);
+                    _rightPleat.prop('disabled', false);
+                    _yardLeft.prop('disabled', true);
+                    _yardRight.prop('disabled', false);
+                    break;
+                default:
+                    _leftNoWidth.prop('disabled', false);
+                    _leftSpace.prop('disabled', false);
+                    _leftNoOfPleats.prop('disabled', false);
+                    _leftPleat.prop('disabled', false);
+                    _rightNoWidth.prop('disabled', false);
+                    _rightSpace.prop('disabled', false);
+                    _rightNoOfPleats.prop('disabled', false);
+                    _rightPleat.prop('disabled', false);
+                    _yardLeft.prop('disabled', false);
+                    _yardRight.prop('disabled', false);
+            }
+        }
+        function saveOrderDetail() {
+            var valid = validateDetailForm();
+            if (valid) {
+                var objDetail = {
+                    RoomLocation: _roomLocation.val(),
+                    Qty: _qty.val(),
+                    Style: _style.val(),
+                    Type: _type.val(),
+                    BRBR: _brbr.val(),
+                    Return: _return.val(),
+                    Overlap: _overlap.val(),
+                    Hoodset: _hoodset.val(),
+                    Fullness: _fullness.val(),
+                    FinishedLength: _finishedLength.val(),
+                    FabricNameColor: _fabricNameColor.val(),
+                    TopHeader: _topHeader.val(),
+                    TopPocket: _topPocket.val(),
+                    BottomHeader: _bottomHeader.val(),
+                    BottomPocket: _bottomPocket.val(),
+                    FinishedWidth: _finishedWidth.val(),
+                    LeftNoWidth: _leftNoWidth.val(),
+                    RightNoWidth: _rightNoWidth.val(),
+                    LeftSpace: _leftSpace.val(),
+                    LeftNoOfPleats: _leftNoOfPleats.val(),
+                    LeftPleat: _leftPleat.val(),
+                    RightSpace: _rightSpace.val(),
+                    RightNoOfPleats: _rightNoOfPleats.val(),
+                    RightPleat: _rightPleat.val(),
+                    YardLeft: _yardLeft.val(),
+                    YardRight: _yardRight.val()
+
+                };
+                if (isAdding) {//add
+                    orderDetails.push(objDetail);
+                }
+                else {//edit
+                    orderDetails[parseInt(_line.text()) - 1] = objDetail;
+                }
+                $("#hdOrderDetail").val(JSON.stringify(orderDetails));
+                loadGrid();
+            }
+            return valid;
+        }
+        function saveOrderDetailAndClose() {
+            var valid = saveOrderDetail();
+            if (valid) {
+                dialog.dialog("close");
+            }
+            return valid;
+        }
+        function saveAndReview() {
+            var valid = saveOrderDetail();
+            if (valid) {
+                dialog.dialog("close");
+                loadReviewGrid();
+                dialogReview.dialog("open");
+            }
+            return valid;
+
+        }
+        function validateDetailForm() {
+            var valid = true;
+            allFields.removeClass("ui-state-error");
+            valid = valid && checkNumber(_qty, "Quantity", true, 1);
+            valid = valid && checkFraction(_brbr, "BR-BR", true, 1);
+            valid = valid && checkFraction(_return, "Return", false, 0);
+            valid = valid && checkFraction(_overlap, "Overlap", false, 0);
+            valid = valid && checkNumber(_fullness, "Fullness", true, 1);
+            valid = valid && checkFraction(_finishedLength, "Finished Length", true, 1);
+            valid = valid && checkFraction(_topHeader, "Top Header", false, 0);
+            valid = valid && checkFraction(_topPocket, "Top Pocket", false, 0);
+            valid = valid && checkFraction(_bottomHeader, "Bottom Header", false, 0);
+            valid = valid && checkFraction(_bottomPocket, "Bottom Pocket", false, 0);
+            valid = valid && checkFraction(_finishedWidth, "Finished Width per Panel", true, 0);
+            valid = valid && checkFraction(_leftNoWidth, "Left No. Width", false, 0);
+            valid = valid && checkFraction(_rightNoWidth, "Right No. Width", false, 0);
+            valid = valid && checkFraction(_leftSpace, "Left Panel - Space ", false, 0);
+            valid = valid && checkFraction(_leftNoOfPleats, "Left Panel - No. of Pleats", false, 0);
+            valid = valid && checkFraction(_leftPleat, "Left Panel - Pleat", false, 0);
+            valid = valid && checkFraction(_rightSpace, "Right Panel - Space", false, 0);
+            valid = valid && checkFraction(_rightNoOfPleats, "Right Panel - No. of Pleats", false, 0);
+            valid = valid && checkFraction(_rightPleat, "Right Pleat", false, 0);
+            valid = valid && checkFraction(_yardLeft, "Yard Left", false, 0);
+            valid = valid && checkFraction(_yardRight, "Yard Right", false, 0);
+            return valid;
+        }
+        function saveAndNewDetail() {
+            var valid = saveOrderDetail();
+            if (valid) {
+                if (orderDetails.length >= 9) {
+                    dialog.dialog("close");
+                }
+                else {
+                    var obj = {
+                        Line: orderDetails.length + 1,
+                        RoomLocation: "",
+                        Qty: 1,
+                        Style: "Cartridge",
+                        Type: "1 Way Left",
+                        BRBR: "",
+                        Return: "",
+                        Overlap: "",
+                        Hoodset: "",
+                        Fullness: "",
+                        FinishedLength: "",
+                        FabricNameColor: "",
+                        TopHeader: "",
+                        TopPocket: "",
+                        BottomHeader: "",
+                        BottomPocket: "",
+                        FinishedWidth: "",
+                        LeftNoWidth: "",
+                        RightNoWidth: "",
+                        LeftSpace: "",
+                        LeftNoOfPleats: "",
+                        LeftPleat: "",
+                        RightSpace: "",
+                        RightNoOfPleats: "",
+                        RightPleat: "",
+                        YardLeft: "",
+                        YardRight: ""
+                    }
+                    isAdding = true;
+                    loadDetail(obj);
+                    allFields.removeClass("ui-state-error");
+                    tips.empty();
+                    $("#dialogOrderDetail").dialog("option", "title", "Add Order Detail");
+                }
+            }
+            return valid;
+
+        }
+        function checkNumber(o, n, isRequired, min) {
+            if (o.val() === '' && isRequired) {
+                o.addClass("ui-state-error");
+                updateTips(n + " cannot empty");
+                return false;
+            }
+            if (isNaN(o.val())) {
+                o.addClass("ui-state-error");
+                updateTips(n + " must be number");
+                return false;
+            }
+            if (parseFloat(o.val()) < min) {
+                o.addClass("ui-state-error");
+                updateTips(n + " must be larger than " + min);
+                return false;
+            } else {
+                return true;
+            }
+        }
+        function checkFraction(o, n, isRequired, min) {
+            if (o.val() === '' && isRequired) {
+                o.addClass("ui-state-error");
+                updateTips(n + " cannot empty");
+                return false;
+            }
+            var _arrNo = o.val().split(' ');
+            if (_arrNo.length > 2) {
+                o.addClass("ui-state-error");
+                updateTips(n + " must be number or fraction");
+                return false;
+            }
+            var no1 = _arrNo[0];
+            if (isNaN(no1)) {
+                o.addClass("ui-state-error");
+                updateTips(n + " must be number or fraction");
+                return false;
+            }
+            if (_arrNo.length === 1) {
+                if (parseFloat(no1) < min) {
+                    o.addClass("ui-state-error");
+                    updateTips(n + " must be larger than " + min);
+                    return false;
+                }
+            }
+            else {
+                var no2 = _arrNo[1];
+                try {
+                    var f2 = math.fraction(no2);
+                    if (parseFloat(no1) + f2 < min) {
+                        o.addClass("ui-state-error");
+                        updateTips(n + " must be larger than " + min);
+                        return false;
+                    }
+                } catch (e) {
+                    o.addClass("ui-state-error");
+                    updateTips(n + " must be number or fraction");
+                    return false;
+                }
+
+
+
+            }
+
+            return true;
+        }
+        function updateTips(t) {
+            tips
+                .text(t)
+                .addClass("ui-state-highlight");
+            setTimeout(function () {
+                tips.removeClass("ui-state-highlight", 1500);
+            }, 500);
+        }
+        function loadDetail(obj) {
+            _line.text(obj.Line);
+            _roomLocation.val(obj.RoomLocation);
+            _qty.val(obj.Qty);
+            _style.val(obj.Style);
+            _type.val(obj.Type);
+            _brbr.val(obj.BRBR);
+            _return.val(obj.Return);
+            _overlap.val(obj.Overlap);
+            _hoodset.val(obj.Hoodset);
+            _fullness.val(obj.Fullness);
+            _finishedLength.val(obj.FinishedLength);
+            _fabricNameColor.val(obj.FabricNameColor);
+            _topHeader.val(obj.TopHeader);
+            _topPocket.val(obj.TopPocket);
+            _bottomHeader.val(obj.BottomHeader);
+            _bottomPocket.val(obj.BottomPocket);
+            _finishedWidth.val(obj.FinishedWidth);
+            _leftNoWidth.val(obj.LeftNoWidth);
+            _rightNoWidth.val(obj.RightNoWidth);
+            _leftNoOfPleats.val(obj.LeftNoOfPleats);
+            _leftPleat.val(obj.LeftPleat);
+            _leftSpace.val(obj.LeftSpace);
+            _rightSpace.val(obj.RightSpace);
+            _rightNoOfPleats.val(obj.RightNoOfPleats);
+            _rightPleat.val(obj.RightPleat);
+            _yardLeft.val(obj.YardLeft);
+            _yardRight.val(obj.YardRight);
+
+            toggleType(obj.Type);
+        }
+        function isNumberOrFraction(o) {
+            if (o.val().length === 0) {
+                return false;
+            }
+            var _arrNo = o.val().split(' ');
+            if (_arrNo.length > 2) {
+                return false;
+            }
+            var no1 = _arrNo[0];
+            if (isNaN(no1)) {
+                return false;
+            }
+            if (_arrNo.length === 1) {
+                return true;
+            }
+
+            var no2 = _arrNo[1];
+            try {
+                var f2 = math.fraction(no2);
+            } catch (e) {
+                return false;
+            }
+            return true;
+        }
+
+        function loadGrid() {
+            $("#tbOrderDetail tbody").empty();
+            if (orderDetails.length === 0) {
+                $("#tbOrderDetail tbody").html('<tr><td colspan="8" class="text-center">No data to display</td></tr>');
+            }
+            else {
+                $.each(orderDetails, function (i, val) {
+                    var _content = '<tr>';
+                    _content += '<td><a href="#" class="edit" myIndex="' + i + '">Edit</a> | <a href="#" class="delete" myIndex="' + i + '">Delete</a></td>';
+                    _content += '<td>' + (i + 1) + '</td>';
+                    _content += '<td>' + val.RoomLocation + '</td>';
+                    _content += '<td>' + val.Qty + '</td>';
+                    _content += '<td>' + val.Style + '</td>';
+                    _content += '<td>' + val.Type + '</td>';
+                    _content += '<td>' + val.BRBR + '</td>';
+                    _content += '<td>' + val.FinishedLength + '</td>';
+                    _content += '</tr>';
+                    $("#tbOrderDetail tbody").append(_content);
+                });
+
+            }
+        }
+        function loadReviewGrid() {
+            $("#tbReviewOrderDetail tbody").empty();
+            if (orderDetails.length === 0) {
+                $("#tbReviewOrderDetail tbody").html('<tr><td colspan="18" class="text-center">No data to display</td></tr>');
+            }
+            else {
+                $.each(orderDetails, function (i, val) {
+                    var _content = '<tr>';
+                    _content += '<td><a href="javascript:void(0);" data-toggle="collapse" data-target="#detail_' + i + '" class="accordion-toggle toggle-btn"><i class="glyphicon glyphicon-plus-sign"></i></a></td> ';
+                    _content += '<td><a href="#" class="edit" myindex="' + i + '">Edit</a> | <a href="#" class="delete" myindex="' + i + '">Delete</a></td>';
+                    _content += '<td>' + (i + 1) + '</td>';
+                    _content += '<td>' + val.RoomLocation + '</td>';
+                    _content += '<td>' + val.Qty + '</td>';
+                    _content += '<td>' + val.Style + '</td>';
+                    _content += '<td>' + val.Type + '</td>';
+                    _content += '<td>' + val.BRBR + '</td>';
+                    _content += '<td>' + val.Return + '</td>';
+                    _content += '<td>' + val.Overlap + '</td>';
+                    _content += '<td>' + val.Hoodset + '</td>';
+                    _content += '<td>' + val.Fullness + '</td>';
+                    _content += '<td>' + val.FinishedLength + '</td>';
+                    _content += '<tr class="accordian-body collapse" id="detail_' + i + '">';
+                    _content += '<td colspan="13">';
+                    _content += '<div>';
+                    _content += '<table style="width:100%" >';
+
+                    _content += '<tr>';
+                    _content += '<td>Room Locations:</td>';
+                    _content += '<td>' + val.RoomLocation + '</td>';
+                    _content += '<td style="width:50px"></td>';
+                    _content += '<td>Left Panel - Space:</td>';
+                    _content += '<td>' + val.LeftSpace + '</td>';
+                    _content += '</tr>';
+
+                    _content += '<tr>';
+                    _content += '<td>Qty:</td>';
+                    _content += '<td>' + val.Qty + '</td>';
+                    _content += '<td></td>';
+                    _content += '<td>Left Panel - No. of Pleats</td>';
+                    _content += '<td>' + val.LeftNoOfPleats + '</td>';
+                    _content += '</tr>';
+
+                    _content += '<tr>';
+                    _content += '<td>Style:</td>';
+                    _content += '<td>' + val.Style + '</td>';
+                    _content += '<td></td>';
+                    _content += '<td>Left Panel - Pleat:</td>';
+                    _content += '<td>' + val.LeftPleat + '</td>';
+                    _content += '</tr>';
+
+                    _content += '<tr>';
+                    _content += '<td>Type:</td>';
+                    _content += '<td>' + val.Type + '</td>';
+                    _content += '<td></td>';
+                    _content += '<td>Right Panel - Space:</td>';
+                    _content += '<td>' + val.RightSpace + '</td>';
+                    _content += '</tr>';
+
+                    _content += '<tr>';
+                    _content += '<td>BR-BR:</td>';
+                    _content += '<td>' + val.BRBR + '</td>';
+                    _content += '<td></td>';
+                    _content += '<td>Right Panel - No. of Pleats:</td>';
+                    _content += '<td>' + val.RightNoOfPleats + '</td>';
+                    _content += '</tr>';
+
+                    _content += '<tr>';
+                    _content += '<td>Return:</td>';
+                    _content += '<td>' + val.Return + '</td>';
+                    _content += '<td></td>';
+                    _content += '<td>Right Panel - Pleat:</td>';
+                    _content += '<td>' + val.RightPleat + '</td>';
+                    _content += '</tr>';
+
+                    _content += '<tr>';
+                    _content += '<td>Overlap:</td>';
+                    _content += '<td>' + val.Overlap + '</td>';
+                    _content += '<td></td>';
+                    _content += '<td>Left No. Width:</td>';
+                    _content += '<td>' + val.LeftNoWidth + '</td>';
+                    _content += '</tr>';
+
+                    _content += '<tr>';
+                    _content += '<td>Hoodset:</td>';
+                    _content += '<td>' + val.Hoodset + '</td>';
+                    _content += '<td></td>';
+                    _content += '<td>Right No. Width:</td>';
+                    _content += '<td>' + val.RightNoWidth + '</td>';
+                    _content += '</tr>';
+
+                    _content += '<tr>';
+                    _content += '<td>Fullness:</td>';
+                    _content += '<td>' + val.Fullness + '</td>';
+                    _content += '<td></td>';
+                    _content += '<td>Yard Left:</td>';
+                    _content += '<td>' + val.YardLeft + '</td>';
+                    _content += '</tr>';
+
+                    _content += '<tr>';
+                    _content += '<td>Finished Length:</td>';
+                    _content += '<td>' + val.FinishedLength + '</td>';
+                    _content += '<td></td>';
+                    _content += '<td>Yard Right:</td>';
+                    _content += '<td>' + val.YardRight + '</td>';
+                    _content += '</tr>';
+
+                    _content += '<tr>';
+                    _content += '<td>Finished Width per Panel:</td>';
+                    _content += '<td>' + val.FinishedWidth + '</td>';
+                    _content += '<td></td>';
+                    _content += '<td>Fabric Name & Color:</td>';
+                    _content += '<td>' + val.FabricNameColor + '</td>';
+                    _content += '</tr>';
+
+                    _content += '<tr>';
+                    _content += '<td>Top Header:</td>';
+                    _content += '<td>' + val.TopHeader + '</td>';
+                    _content += '<td></td>';
+                    _content += '<td>Top Pocket</td>';
+                    _content += '<td>' + val.TopPocket + '</td>';
+                    _content += '</tr>';
+
+                    _content += '<tr>';
+                    _content += '<td>Bottom Header:</td>';
+                    _content += '<td>' + val.BottomHeader + '</td>';
+                    _content += '<td></td>';
+                    _content += '<td>Bottom Pocket:</td>';
+                    _content += '<td>' + val.BottomPocket + '</td>';
+                    _content += '</tr>';
+
+                    _content += '</table>';
+                    _content += '</div>';
+                    _content += '</td>';
+
+                    _content += '</tr>';
+
+                    $("#tbReviewOrderDetail>tbody").append(_content);
+                });
+            }
+        }
+        if ($("#hdOrderDetail").val() !== '') {
+            orderDetails = JSON.parse($("#hdOrderDetail").val());
+        }
+        loadGrid();
+    });
+
+</script>
+@if (ViewBag.DownloadFileUrl != null)
+{
+    <script>
+        setTimeout(function () { window.open('@ViewBag.DownloadFileUrl', '_self'); },500);
+    </script>
+}
+
+
+
+
+

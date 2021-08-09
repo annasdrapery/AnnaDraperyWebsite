@@ -1,0 +1,11 @@
+﻿@model RelayResponseModel
+@using Nop.Plugin.Payments.SIMAuthorizeNet.Models;
+@using Nop.Web.Framework;
+@{
+    Layout = "";
+}
+
+<script type="text/javascript">
+    window.location = "@Html.Raw(Model.ReturnUrl)";
+</script>
+<h2>Redirecting...</h2>

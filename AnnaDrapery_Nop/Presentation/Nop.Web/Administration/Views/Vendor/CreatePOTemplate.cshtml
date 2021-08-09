@@ -1,0 +1,30 @@
+﻿
+@model POTemplateMessageModel
+@{
+    //page title
+    ViewBag.Title = T("Admin.Vendors.AddPOTemplate").Text;
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="section-header">
+        <div class="title">
+        <img src="@Url.Content("~/Administration/Content/images/ico-content.png")" alt="" />
+        @T("Admin.Vendors.AddPOTemplate")
+        @if(Model.VendorId > 0)
+        {
+            <text>@Html.ActionLink("(" + T("Admin.Vendors.POTemplate.BackToList") + ")", "Edit", "Vendor", new { Id = Model.VendorId }, null)</text>
+            
+        }
+        else
+        {
+             <text>@Html.ActionLink("(" + T("Admin.Vendors.BackToList") + ")", "List")</text>
+        }
+        </div>
+        <div class="options">
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
+        </div>
+    </div>
+    @Html.Partial("_CreateOrUpdatePOTemplate", Model)
+}

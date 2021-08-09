@@ -1,0 +1,23 @@
+﻿@model HomePageBlogModel
+@using Nop.Web.Models.Blogs
+
+@if(Model.BlogPosts.Count > 0)
+{
+    <div class="blog-post-area">
+        <h2><span>Blog</span></h2>
+        <div class="custom-page-box-div">
+            @foreach(var item in Model.BlogPosts)
+            {
+
+                <a href="@Url.RouteUrl("BlogPost", new {SeName = item.SeName })">
+                    @Html.Raw(item.BodyOverview)           
+                </a>
+                <div style="clear:both">&nbsp;</div>
+            }
+            <div class="view-all pull-text-right hide">
+                <a href="@Url.RouteUrl("Blog")" class="btn btn-primary">Go To Blog</a>
+            </div>
+        </div>
+        
+    </div>
+}

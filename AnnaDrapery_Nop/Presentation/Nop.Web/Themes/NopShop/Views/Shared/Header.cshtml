@@ -1,0 +1,39 @@
+﻿<div class="header-middle"><!--header-middle-->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="logo pull-left">
+                    <a class="logo" href="@Url.RouteUrl("HomePage")"></a>
+                </div>
+                <div class="btn-group pull-right" style="margin-top: 8px;">
+                                    
+                </div>
+            </div>
+            <div class="col-sm-8">
+                @Html.Action("HeaderLinks", "Common")
+                <!--<div class="bbb-list pull-right">
+                    <ul>
+                        <li><img src="~/Content/Images/BBB.jpg" /></li>
+                        <li><div class="bbb-text">Member of <strong>Better Business Bureau</strong></div></li>
+                    </ul>-->
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Partial("_Notifications")
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+

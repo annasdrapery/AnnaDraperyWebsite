@@ -1,0 +1,33 @@
+﻿@model ShippingFeeByOrderTotalModel
+@Html.ValidationSummary(true)
+@Html.HiddenFor(model => model.Id)
+
+<table class="adminContent">
+    <tr>
+        <td class="adminTitle">
+            @Html.NopLabelFor(model => model.MinValue):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.MinValue)
+            @Html.ValidationMessageFor(model => model.MinValue)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.NopLabelFor(model => model.MaxValue):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.MaxValue)
+            @Html.ValidationMessageFor(model => model.MaxValue)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.NopLabelFor(model => model.ShippingFee):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.ShippingFee)
+            @Html.ValidationMessageFor(model => model.ShippingFee)
+        </td>
+    </tr>
+</table>

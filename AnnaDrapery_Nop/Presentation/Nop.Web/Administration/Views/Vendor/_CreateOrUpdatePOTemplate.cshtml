@@ -1,0 +1,107 @@
+﻿@using Nop.Core.Domain.Catalog;
+@using Nop.Services.Catalog;
+@using System.Text;
+@using MvcCheckBoxList.Model
+
+@model POTemplateMessageModel
+@Html.ValidationSummary(false)
+@Html.HiddenFor(model => model.Id)
+<table class="adminContent">
+    <tr>
+        <td class="adminTitle">
+             @Html.NopLabelFor(model => model.Name):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.NopLabelFor(model => model.VendorId):
+        </td>
+        <td class="adminData">
+            @Html.DropDownListFor(model => model.VendorId, Model.AvailableVendors)
+            @Html.ValidationMessageFor(model => model.VendorId)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.NopLabelFor(model => model.ProductTypesDisplay):
+        </td>
+        <td class="adminData">
+            @Html.CheckBoxListFor(model => model.PostedProductTypes.ProductTypeIds,
+                                  model => model.AvailableProductTypes,
+                                  pt => pt.ProductTypeId,
+                                  pt => pt.ProductTypeName,
+                                  model => model.SelectedProductTypes,
+                                  new HtmlListInfo(HtmlTag.vertical_columns, 3,new { @class="style_checkboxlist" }))
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+             @Html.NopLabelFor(model => model.Subject):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Subject)
+            @Html.ValidationMessageFor(model => model.Subject)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+             @Html.NopLabelFor(model => model.POTemplateHtml):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.POTemplateHtml,"RichEditor")
+            @Html.ValidationMessageFor(model => model.POTemplateHtml)
+        </td>
+    </tr>
+        <tr>
+        <td class="adminTitle">
+             @Html.NopLabelFor(model => model.POTemplateExcel):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.POTemplateExcel,"RichEditor")
+            @Html.ValidationMessageFor(model => model.POTemplateExcel)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+             @Html.NopLabelFor(model => model.CC):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.CC)
+            @Html.ValidationMessageFor(model => model.CC)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+             @Html.NopLabelFor(model => model.BCC):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.BCC)
+            @Html.ValidationMessageFor(model => model.BCC)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+             @Html.NopLabelFor(model => model.Active):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Active)
+            @Html.ValidationMessageFor(model => model.Active)
+        </td>
+    </tr>
+     @if (Model.CreatedOn.HasValue)
+    {
+        <tr>
+            <td class="adminTitle">
+                @Html.NopLabelFor(model => model.CreatedOn):
+            </td>
+            <td class="adminData">
+                @Model.CreatedOn.Value.ToString("F")
+                @Html.HiddenFor(model => model.CreatedOn)
+            </td>
+        </tr>
+    }
+</table>

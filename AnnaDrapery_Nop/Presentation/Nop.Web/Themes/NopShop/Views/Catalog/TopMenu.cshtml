@@ -1,0 +1,532 @@
+﻿@model TopMenuModel
+@using System.Text.RegularExpressions
+@using Nop.Web.Models.Catalog;
+@{
+    var isRtl = this.ShouldUseRtlTheme();
+}
+@helper Bracket_Remover(string input)
+{
+    int index1 = input.IndexOf('(');
+    string result = input.Remove(index1, 1);
+
+    index1 = result.IndexOf(')');
+    result = result.Remove(index1, 1);
+
+    @Html.Raw(@result)
+}
+
+
+@helper RenderSubCategoryLine(CategorySimpleModel category, int level)
+{
+    <li>
+        <a class="dropdown-toggle" data-toggle="dropdown" href="@Url.RouteUrl("Category", new { SeName = category.SeName })">
+            @category.Name
+            &nbsp;<i class="fa fa-angle-down"></i>
+            &nbsp;<i class="fa fa-angle-right"></i>
+        </a>
+        <ul class="dropdown-menu">
+            @foreach (var subCategory in category.SubCategories)
+            {
+                @RenderCategoryLine(subCategory, level + 1)
+            }
+        </ul>
+
+    </li>
+}
+
+@helper RenderCategoryLine(CategorySimpleModel category, int level)
+{
+    if (category.SubCategories.Count > 0)
+    {
+        @RenderSubCategoryLine(category, 0)
+    }
+    else
+    {
+        <li>
+            <a href="@Url.RouteUrl("Category", new { SeName = category.SeName })">
+                @category.Name
+            </a>
+        </li>
+    }
+}
+
+@helper RenderHardwareCategories(CategorySimpleModel category, TopMenuModel menu)
+{
+    <li class="navHardware">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="@Url.RouteUrl("Topic", new {SeName = category.SeName})">
+            @category.Name
+            &nbsp;<i class="fa fa-angle-down"></i>
+            &nbsp;<i class="fa fa-angle-right"></i>
+        </a>
+        <div class="hardwareBox dropdown-menu">
+            <div class="hardwareWrap">
+                <div class="hardwareListBox">
+                    <ul class="hardwareList">
+                        <li ref="#xxbrand" class="active">Shop By Brand <i class="fa fa-angle-right"></i></li>
+                        <li ref="#xxcomponent">Shop By Component <i class="fa fa-angle-right"></i></li>
+                        <li ref="#xxcrset">Complete Rods Set <i class="fa fa-angle-right"></i></li>
+                        <li ref="#xxbcrods">Basic Curtain Rods <i class="fa fa-angle-right"></i></li>
+                        <li ref="#xxdtrods">Decorative Traverse Rods <i class="fa fa-angle-right"></i></li>
+                        <li ref="#xxhdcrods">Heavy-Duty Curtain Rods <i class="fa fa-angle-right"></i></li>
+                    </ul>
+                </div>
+                <div class="hardwareDetail">
+                    <div id="xxbrand" class="">
+                        <div class="hwTitle" style="background-image:url('/content/images/wood.png')">
+                            <div class="title">Shop By Brand</div>
+                            <div class="sub-title">Find your Designer Brands!</div>
+                        </div>
+                        <div class="hwDetails">
+                            @foreach (var brand in menu.Brands)
+                            {
+                                <div class="hwDetail">
+                                    <a href="@Url.RouteUrl("Topic", new {SeName = brand.SeName})" class="img-link" title="@brand.Name">
+                                        <img src="@brand.PictureModel.ImageUrl" alt="" />
+                                    </a>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                    <div id="xxcomponent" class="hide">
+                        <div class="hwTitle" style="background-image:url('/content/images/wood.png')">
+                            <div class="title">Shop By Component</div>
+                            <div class="sub-title">Find the perfect Finial, Pole Ring or Bracket!</div>
+                        </div>
+                        <div class="hwDetails">
+                            <div class="hwDetail">
+                                <a href="/finials" style="background-image:url('/content/images/finials.png')">
+                                    <span>Finials</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/poles" style="background-image:url('/content/images/poles.png')">
+                                    <span>Poles</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/brackets" style="background-image:url('/content/images/brackets.png')">
+                                    <span>Brackets</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/rings" style="background-image:url('/content/images/rings.png')">
+                                    <span>Rings</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/accessories-2" style="background-image:url('/content/images/accessories.png')">
+                                    <span>Accessories</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/holdbacks" style="background-image:url('/content/images/holdbacks.png')">
+                                    <span>HoldBacks</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/packaged-sets" style="background-image:url('/content/images/packagedsets.png')">
+                                    <span>Packaged Sets</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a title="Adjustable Traverse" href="/adjustable-traverse" style="background-image:url('/content/images/adj-traverse.png'); background-repeat:no-repeat">
+                                    <span>Adjustable Traverse</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="xxcrset" class="hide">
+                        <div class="hwTitle" style="background-image:url('/content/images/completerodsets.png')">
+                            <div class="title">Complete Rod Sets</div>
+                            <div class="sub-title">Everything's included! Finial, Pole & Brackets! With optional rings for most sets.</div>
+                        </div>
+                        <div class="hwDetails">
+                            <div class="hwDetail">
+                                <a href="/decorative-traverse-rods" style="background-image:url('/content/images/traverse.png')">
+                                    <span>Traverse</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/complete-rod-sets?cls=2" style="background-image:url('/content/images/sets_wood.png')">
+                                    <span>Wood</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/complete-rod-sets?cls=1" style="background-image:url('/content/images/sets_metal.png')">
+                                    <span>Metal</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/complete-rod-sets?cls=3" style="background-image:url('/content/images/sets_iron.png')">
+                                    <span>Iron</span>
+                                </a>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div id="xxbcrods" class="hide">
+                        <div class="hwTitle" style="background-image:url('/content/images/basiccurtainrod.png')">
+                            <div class="title">Basic Curtain Rods</div>
+                            <div class="sub-title">Rods for traverse drapes, valances, rod-pocket or stationary panels.</div>
+                        </div>
+                        <div class="hwDetails">
+                            <div class="hwDetail">
+                                <a href="/basic-curtain-rods?rt=1" style="background-image:url('/content/images/basic_single.png')">
+                                    <span>Single</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/basic-curtain-rods?2t=2" style="background-image:url('/content/images/basic_double.png')">
+                                    <span>Double</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/basic-curtain-rods?2t=3" style="background-image:url('/content/images/basic_combo.png')">
+                                    <span>Combo</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/basic-curtain-rods?rt=4" style="background-image:url('/content/images/basic_standard.png')">
+                                    <span>Standard</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/basic-curtain-rods?rt=5" style="background-image:url('/content/images/basic_sash.png')">
+                                    <span>Sash Rods</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/basic-curtain-rods?rt=6" style="background-image:url('/content/images/basic_cafe.png')">
+                                    <span>Cafe Rods</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/basic-curtain-rods?rt=7" style="background-image:url('/content/images/basic_utility.png')">
+                                    <span>Utility Rods</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/basic-curtain-rods?rt=8" style="background-image:url('/content/images/basic_wide.png')">
+                                    <span>Wide Face</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/basic-curtain-rods?rt=9" style="background-image:url('/content/images/basic_tension.png')">
+                                    <span>Tension</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/basic-curtain-rods?rt=10" style="background-image:url('/content/images/basic_shapes.png')">
+                                    <span>Shapes</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/basic-curtain-rods?rt=11" style="background-image:url('/content/images/basic_parts.png')">
+                                    <span>Parts</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="xxdtrods" class="hide">
+                        <div class="hwTitle" style="background-image:url('/content/images/dec_top.png')">
+                            <div class="title">Decorative Traverse Rods</div>
+                            <div class="sub-title">Looks like a decorative pole, functions like a curtain rod!</div>
+                        </div>
+                        <div class="hwDetails">
+                            <div class="hwDetail">
+                                <a href="/decorative-traverse-rods?cls=2&ps=10" style="background-image:url('/content/images/dec_smooth.png')">
+                                    <span>Smooth Wood</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/decorative-traverse-rods?cls=2&ps=3" style="background-image:url('/content/images/dec_flute.png')">
+                                    <span>Fluted Wood</span>
+                                </a>
+                            </div>
+
+                            <div class="hwDetail">
+                                <a href="/decorative-traverse-rods?cls=2&ps=10&rp=8" style="background-image:url('/content/images/dec_smoothrings.png')">
+                                    <span>Smooth/Rings</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/decorative-traverse-rods?cls=2&ps=3&rp=8" style="background-image:url('/content/images/dec_flutedrings.png')">
+                                    <span>Fluted/Rings</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/decorative-traverse-rods?cls=1" style="background-image:url('/content/images/dec_metal.png')">
+                                    <span>Metal</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/decorative-traverse-rods?cls=1&rp=8" style="background-image:url('/content/images/dec_metalrings.png')">
+                                    <span>Metal/Rings</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/decorative-traverse-rods?rp=6" style="background-image:url('/content/images/dec_double.png')">
+                                    <span>Double Option</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/decorative-traverse-rods?rp=1" style="background-image:url('/content/images/dec_ripple.png')">
+                                    <span>Ripplefold</span>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div id="xxhdcrods" class="hide">
+                        <div class="hwTitle" style="background-image:url('/content/images/hd_top.png')">
+                            <div class="title">Heavy-Duty Curtain Rods</div>
+                            <div class="sub-title">Super strong rods for any window! Bay, double, curved, corner & cubicle options.</div>
+                        </div>
+                        <div class="hwDetails">
+                            <div class="hwDetail">
+                                <a href="/heavy-duty-curtain-rods?rp=1" style="background-image:url('/content/images/hd_ripple.png')">
+                                    <span>Ripplefold</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/heavy-duty-curtain-rods?rp=2" style="background-image:url('/content/images/hd_wall.png')">
+                                    <span>Wall Mount</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/heavy-duty-curtain-rods?rp=3" style="background-image:url('/content/images/hd_ceiling.png')">
+                                    <span>Ceiling Mount</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/heavy-duty-curtain-rods?rp=4" style="background-image:url('/content/images/hd_bay.png')">
+                                    <span>Bay Option</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/heavy-duty-curtain-rods?dt=3" style="background-image:url('/content/images/hd_frenchrods.png')">
+                                    <span>French Rods</span>
+                                </a>
+                            </div>
+                            <div class="hwDetail">
+                                <a href="/heavy-duty-curtain-rods?dt=2" style="background-image:url('/content/images/hd_dec.png')">
+                                    <span>Decorative</span>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </li>
+}
+<div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".category-navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse category-navbar-collapse">
+            <ul class="nav navbar-nav nav-pills" style="font-size:15px;">
+                @Html.Widget("header_menu_before")
+                <li><a href="@Url.RouteUrl("HomePage")"><span class="glyphicon glyphicon-home"></span></a></li>
+                @{
+                    var rootCategories = Model.Categories.Where(x => x.IncludeInTopMenu).ToList();
+                }
+                @foreach (var category in rootCategories)
+                {
+                    if (category.Name == "Drapery Hardware")
+                    {
+                        @*RenderHardwareCategories(category,Model)*@
+                        <li><a href="/catalogs">Catalogs</a></li>
+                    }
+                    else
+                    {
+                        @RenderCategoryLine(category, 0)
+                    }
+                }
+
+                @foreach (var topic in Model.Topics)
+                {
+                    <li><a href="@Url.RouteUrl("Topic", new {SeName = topic.SeName})">@topic.Name</a></li>
+
+                }
+                @if (Model.Categories.Count == 0 && Model.Topics.Count == 0)
+                {
+                    //no categories to display?
+                    //in this cae let's diplay some default menu items
+                    <li><a href="@Url.RouteUrl("HomePage")">@T("HomePage")</a></li>
+                    if (Model.NewProductsEnabled)
+                    {
+                        <li>
+                            <a href="@Url.RouteUrl("NewProducts")">@T("Products.NewProducts")</a>
+                        </li>
+                    }
+                    <li><a href="@Url.RouteUrl("ProductSearch")">@T("Search")</a> </li>
+                    <li><a href="@Url.RouteUrl("CustomerInfo")">@T("Account.MyAccount")</a></li>
+                    if (Model.BlogEnabled)
+                    {
+                        <li><a href="@Url.RouteUrl("Blog")">@T("Blog")</a></li>
+                    }
+                    if (Model.ForumEnabled)
+                    {
+                        <li><a href="@Url.RouteUrl("Boards")">@T("Forum.Forums")</a></li>
+                    }
+
+                }
+                <!--<li><a href="/catalogs">Catalogs</a></li>-->
+                <li>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)" style="color:red;">
+                        Designer's Section
+                        &nbsp;<i class="fa fa-angle-down"></i>
+                        &nbsp;<i class="fa fa-angle-right"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        @*<!--
+                            <li><a href="/price-list">Price List</a></li>
+                            <li><a href="/Sale_Tax_Certificate.pdf">Sale Tax Certificate</a></li>
+                            <li><a href="/CUSTOMER_CREDIT_APPLICATION.pdf">Customer Credit Application</a></li>
+                            <li><a href="/drapery-order-form">DRAPES ORDER FORM</a></li>
+                            <li><a href="/top-treatments-shades">TOP TREATMENTS & SHADES</a></li>
+                            -->
+                            <!--<li><a href="/Download/ANNA'S DRAPERY Price List LATES VERSION MINH CORRECTION.pdf" target="_blank">Price List</a></li>-->
+                            <!--<li><a href="/Download/ANNA'S DRAPERY Price List LATES VERSION 2021.pdf" target="_blank">Price List</a></li>-->
+                            <li><a href="/price-list">Price List</a></li>
+                            <li><a href="/sale-tax-certificate">Sale Tax Certificate</a></li>
+                            <li><a href="/customer-credit-application">Customer Credit Application</a></li>
+                            <!--<li><a href="/NEW PLEATED TO PRINT.xlsx" target="_blank">DRAPES ORDER FORM</a></li>-->
+                            <li><a href="/drapery-order-form">Drape Order Forms</a></li>
+                            <!--<li><a href="/TOP_TREATMENTS_SHADES.xlsx" target="_blank">TOP TREATMENTS & SHADES</a></li>-->
+                            <li><a href="/sheer-railroll-order-form">Sheer Railroll Order Forms</a></li>
+                            <li><a href="/sheer-vertical-order-form">Sheer Vertical Order Forms</a></li>
+                            <li><a href="/ripplefold-order-form">Ripple Fold Order Forms</a></li>*@
+
+                        <li><a href="/sale-tax-certificate">Sale Tax Certificate</a></li>
+                        <li><a href="/customer-credit-application">Customer Credit Application</a></li>
+                        <li>
+
+                            @if (Model.DesignerLoginEnabled)
+                            {
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="/designer-login-landing">
+                                    Designer
+                                    &nbsp;<i class="fa fa-angle-down"></i>
+                                    &nbsp;<i class="fa fa-angle-right"></i>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/Download/ANNA'S DRAPERY Price List LATES VERSION 2021.pdf" target="_blank">Download Price List</a></li>
+                                    <li>
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">
+                                            Download Order Forms
+                                            &nbsp;<i class="fa fa-angle-down"></i>
+                                            &nbsp;<i class="fa fa-angle-right"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/PLEATED DRAPES ORDER 2020 experience.xlsx">Drape Order Form</a></li>
+                                            <li><a href="/SHEER RAIL ROLL ORDER FORM.xlsx">Sheer Railroll Order Form</a></li>
+                                            <li><a href="/SHEER VERTICAL ORDER FORM.xlsx">Sheer Vertical Order Form</a></li>
+                                            <li><a href="/RIPPLE FOLD ORDER FORM.xlsx">Ripple Fold Order Form</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">
+                                            Place your Orders
+                                            &nbsp;<i class="fa fa-angle-down"></i>
+                                            &nbsp;<i class="fa fa-angle-right"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/drapery-order-form">Drape Order</a></li>
+                                            <li><a href="/sheer-railroll-order-form">Sheer Railroll Order Form</a></li>
+                                            <li><a href="/sheer-vertical-order-form">Sheer Vertical Order Form</a></li>
+                                            <li><a href="/ripplefold-order-form">Ripple Fold Order Form</a></li>
+                                        </ul>
+                                    </li>
+
+                                </ul>
+                            }
+                            else
+                            {
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="/designer-login-landing">
+                                    Designer Login
+                                    &nbsp;<i class="fa fa-angle-down"></i>
+                                    &nbsp;<i class="fa fa-angle-right"></i>
+                                </a>
+                            }
+
+                        </li>
+                    </ul>
+
+                </li>
+                @foreach (var category in rootCategories)
+                {
+                    if (category.Name == "Drapery Hardware")
+                    {
+                        @RenderHardwareCategories(category, Model)
+                    }
+
+                }
+                <li><a target="_blank" href="http://elegantblindsinc.com/" style="color:red; position:relative">Blinds <img src="/Content/Images/hot.gif" alt="" style="width: 35px;position: absolute;top: 5px;right: 0;" /></a></li>
+                <li><a href="@Url.RouteUrl("ContactUs")">@T("ContactUs")</a></li>
+
+
+
+                <!--<li><a href="@Url.RouteUrl("Blog")">Blog</a></li>-->
+                @Html.Widget("header_menu_after")
+            </ul>
+
+        </div><!--/.nav-collapse -->
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('.navbar-nav a.dropdown-toggle').on('click', function (e) {
+            window.location.href = $(this).attr("href");
+        });
+    });
+</script>
+
+<script>
+    function setMouseHoverDropdown() {
+        if ($(window).innerWidth() > 767) {
+            $('ul.nav li').hover(function () {
+                $(this).find('> .dropdown-menu').stop(true, true).delay(200).fadeIn(500);
+            }, function () {
+                $(this).find('> .dropdown-menu').stop(true, true).delay(200).fadeOut(500);
+            });
+        }
+    }
+    $(window).load(function () {
+        setMouseHoverDropdown();
+    });
+    $(document).ready(function () {
+        setMouseHoverDropdown();
+        $(".hardwareList>li").click(function () {
+            $(".hardwareList>li").removeClass("active");
+            $(this).addClass("active");
+            $(".hardwareDetail>div").addClass("hide");
+            $($(this).attr("ref")).removeClass("hide");
+        });
+    });
+    $(window).resize(function () {
+        setMouseHoverDropdown();
+    });
+</script>
+
+@*<script>
+        $(document).ready(function () {
+            $(".navbar-toggle").click(function () {
+                $(this).parent().find("> .navbar-header").css("overflow-y", "auto");
+            });
+        });
+    </script>*@
+
+

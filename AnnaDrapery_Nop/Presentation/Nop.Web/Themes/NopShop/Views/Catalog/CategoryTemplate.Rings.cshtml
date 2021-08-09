@@ -1,0 +1,364 @@
+﻿
+@model CategoryModel
+@{
+    Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+    Html.AddTitleParts(!String.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
+    Html.AddMetaDescriptionParts(Model.MetaDescription);
+    Html.AddMetaKeywordParts(Model.MetaKeywords);
+
+    var canonicalUrlsEnabled = EngineContext.Current.Resolve<SeoSettings>().CanonicalUrlsEnabled;
+    if (canonicalUrlsEnabled)
+    {
+        var categoryUrl = Url.RouteUrl("Category", new { SeName = Model.SeName }, this.Request.Url.Scheme);
+        Html.AddCanonicalUrlParts(categoryUrl);
+    }
+    var countItem = 0;
+    var maxDisplayItem = 10;
+    var breadcrumbDelimiter = EngineContext.Current.Resolve<CommonSettings>().BreadcrumbDelimiter;
+}
+@using Nop.Core.Domain.Common;
+@using Nop.Core.Domain.Seo;
+@using Nop.Core.Infrastructure;
+@using Nop.Web.Models.Catalog;
+@using Nop.Web.Extensions;
+@*category breadcrumb*@
+<div class="row">      
+    <div class="col-md-3 left-sidebar">
+        <h2><span>Refine By</span></h2>
+        <div class="panel-group category-products category-navigation-div">
+            <div class="panel panel-default">
+                <div class="panel-heading ">
+                    <h4 class="panel-title">
+                    <a href="#" class="toggleChildren"  childPanel="collectionStylePanel">
+                            <span class="expandChild medal pull-right"><i class="fa fa-caret-down"></i></span>
+                            <span class="collapseChild medal pull-right hide"><i class="fa fa-caret-up"></i></span>
+                        Collection Style</a>
+                    </h4>
+                </div>                
+                <div class="panel-collapse collapse in" id="collectionStylePanel">
+                    <div class="panel-body">
+                        <ul style="margin-bottom:0;">
+                            @foreach(var item in Model.PagingFilteringContext.AvailableCollectionStyles)
+                            {
+                                <li class="option-list">
+                                    <label><input type="checkbox" value="@item.Value" checked="@item.Selected" class="hardware-prop" ptype="cls" />
+                                    @item.Text</label>
+                                </li> 
+                            }
+                        </ul>
+                    </div>
+                </div>
+    
+            </div>          
+        </div>
+        <div class="panel-group category-products category-navigation-div">
+            <div class="panel panel-default">
+                <div class="panel-heading ">
+                    <h4 class="panel-title">
+                    <a href="#" class="toggleChildren"  childPanel="brandPanel">
+                            <span class="expandChild medal pull-right"><i class="fa fa-caret-down"></i></span>
+                            <span class="collapseChild medal pull-right hide"><i class="fa fa-caret-up"></i></span>
+                        Brand</a>
+                    </h4>
+                </div>                
+                <div class="panel-collapse collapse in" id="brandPanel">
+                    <div class="panel-body">
+                        <ul style="margin-bottom:0;">
+                            @{
+                                countItem = 0;
+                                foreach(var item in Model.PagingFilteringContext.AvailableBrands)
+                                {
+                                    countItem++;
+                                    if(countItem > maxDisplayItem)
+                                    {
+                                        break;
+                                    }
+                                    <li class="option-list">
+                                        <label><input type="checkbox" value="@item.Value" checked="@item.Selected"  class="hardware-prop" ptype="br" />
+                                        @item.Text</label>
+                                    </li>                                    
+                                }
+                            }
+                        </ul>
+                        @if(countItem > maxDisplayItem)
+                        {
+                        <ul class="moreItems hide" >
+                           @{
+                                countItem = 0;
+                                foreach(var item in Model.PagingFilteringContext.AvailableBrands)
+                                {                                 
+                                    if(countItem < maxDisplayItem)
+                                    {
+                                        countItem++;
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        <li class="option-list">
+                                            <label><input type="checkbox" value="@item.Value" checked="@item.Selected"  class="hardware-prop" ptype="br" />
+                                            @item.Text</label>
+                                        </li>  
+                                    }
+                                    
+                                }
+                            }
+                        </ul>
+                        <a class="seeMore">See More...</a>
+                        }
+                    </div>
+                </div>
+    
+            </div>          
+        </div>
+        <div class="panel-group category-products category-navigation-div">
+             <div class="panel panel-default">
+                <div class="panel-heading ">
+                    <h4 class="panel-title">
+                    <a href="#" class="toggleChildren"  childPanel="componentPanel">
+                            <span class="expandChild medal pull-right"><i class="fa fa-caret-down"></i></span>
+                            <span class="collapseChild medal pull-right hide"><i class="fa fa-caret-up"></i></span>
+                        Matching Pole Diameter</a>
+                    </h4>
+                </div>                
+                <div class="panel-collapse collapse in" id="componentPanel">
+                    <div class="panel-body">
+                        <ul style="margin-bottom:0;">
+                            @{
+                                countItem = 0;
+                                foreach(var item in Model.PagingFilteringContext.AvailablePoleDiameters)
+                                {
+                                    countItem++;
+                                    if(countItem > maxDisplayItem)
+                                    {
+                                        break;
+                                    }
+                                    <li class="option-list">
+                                        <label><input type="checkbox" value="@item.Value" checked="@item.Selected"  class="hardware-prop" ptype="pdm"/>
+                                        @item.Text</label>
+                                    </li>                                    
+                                }
+                            }
+                        </ul>
+                        @if(countItem > maxDisplayItem)
+                        {
+                        <ul class="moreItems hide" >
+                           @{
+                                countItem = 0;
+                                foreach(var item in Model.PagingFilteringContext.AvailablePoleDiameters)
+                                {                                 
+                                    if(countItem < maxDisplayItem)
+                                    {
+                                        countItem++;
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        <li class="option-list">
+                                            <label><input type="checkbox" value="@item.Value" checked="@item.Selected"  class="hardware-prop" ptype="pdm" />
+                                            @item.Text</label>
+                                        </li>  
+                                    }
+                                    
+                                }
+                            }
+                        </ul>
+                        <a class="seeMore">See More...</a>
+                        }
+
+                            
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+        <div class="panel-group category-products category-navigation-div">
+            <div class="panel panel-default">
+                <div class="panel-heading ">
+                    <h4 class="panel-title">
+                    <a href="#" class="toggleChildren"  childPanel="innerDiameterPanel">
+                            <span class="expandChild medal pull-right"><i class="fa fa-caret-down"></i></span>
+                            <span class="collapseChild medal pull-right hide"><i class="fa fa-caret-up"></i></span>
+                        Inner Diameter</a>
+                    </h4>
+                </div>                
+                <div class="panel-collapse collapse in" id="innerDiameterPanel">
+                    <div class="panel-body">
+                        <ul style="margin-bottom:0;">
+                            @{
+                                countItem = 0;
+                                foreach(var item in Model.PagingFilteringContext.AvailableInnerDiameters)
+                                {
+                                    countItem++;
+                                    if(countItem > maxDisplayItem)
+                                    {
+                                        break;
+                                    }
+                                    <li class="option-list">
+                                        <label><input type="checkbox" value="@item.Value" checked="@item.Selected"  class="hardware-prop" ptype="idm" />
+                                        @item.Text</label>
+                                    </li>                                    
+                                }
+                            }
+                        </ul>
+                        @if(countItem > maxDisplayItem)
+                        {
+                        <ul class="moreItems hide" >
+                           @{
+                                countItem = 0;
+                                foreach(var item in Model.PagingFilteringContext.AvailableInnerDiameters)
+                                {                                 
+                                    if(countItem < maxDisplayItem)
+                                    {
+                                        countItem++;
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        <li class="option-list">
+                                            <label><input type="checkbox" value="@item.Value" checked="@item.Selected"  class="hardware-prop" ptype="idm"/>
+                                            @item.Text</label>
+                                        </li>  
+                                    }
+                                    
+                                }
+                            }
+                        </ul>
+                        <a class="seeMore">See More...</a>
+                        }
+                        
+                    </div>
+                </div>
+    
+            </div>          
+        </div>
+<div class="panel-group category-products category-navigation-div">
+            <div class="panel panel-default">
+                <div class="panel-heading ">
+                    <h4 class="panel-title">
+                    <a href="#" class="toggleChildren"  childPanel="outerDiameterPanel">
+                            <span class="expandChild medal pull-right"><i class="fa fa-caret-down"></i></span>
+                            <span class="collapseChild medal pull-right hide"><i class="fa fa-caret-up"></i></span>
+                        Outer Diameter</a>
+                    </h4>
+                </div>                
+                <div class="panel-collapse collapse in" id="outerDiameterPanel">
+                    <div class="panel-body">
+                        <ul style="margin-bottom:0;">
+                            @{
+                                countItem = 0;
+                                foreach(var item in Model.PagingFilteringContext.AvailableOuterDiameters)
+                                {
+                                    countItem++;
+                                    if(countItem > maxDisplayItem)
+                                    {
+                                        break;
+                                    }
+                                    <li class="option-list">
+                                        <label><input type="checkbox" value="@item.Value" checked="@item.Selected"  class="hardware-prop" ptype="odm" />
+                                        @item.Text</label>
+                                    </li>                                    
+                                }
+                            }
+                        </ul>
+                        @if(countItem > maxDisplayItem)
+                        {
+                        <ul class="moreItems hide" >
+                           @{
+                                countItem = 0;
+                                foreach(var item in Model.PagingFilteringContext.AvailableOuterDiameters)
+                                {                                 
+                                    if(countItem < maxDisplayItem)
+                                    {
+                                        countItem++;
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        <li class="option-list">
+                                            <label><input type="checkbox" value="@item.Value" checked="@item.Selected"  class="hardware-prop" ptype="odm"/>
+                                            @item.Text</label>
+                                        </li>  
+                                    }
+                                    
+                                }
+                            }
+                        </ul>
+                        <a class="seeMore">See More...</a>
+                        }
+                        
+                    </div>
+                </div>
+    
+            </div>          
+        </div>
+
+    </div>
+    <div class="col-md-9 padding-right">
+        <div class="hardware-box">
+            <h2 class="text-left hardware-title">@Model.Name</h2>   
+            @if (!String.IsNullOrWhiteSpace(Model.Description))
+            {
+                <div style="margin-bottom:20px;">@Html.Raw(Model.Description)</div>
+            }  
+
+            <div class="clearfix space15px"></div>
+            @*product list*@
+            @if (Model.Products.Count > 0)
+            {
+                if (Model.PagingFilteringContext.ViewMode == "list")
+                {
+                     @*list mode*@
+                    <div class="product-list">
+                    
+                        @foreach (var product in Model.Products)
+                        {
+                            <div class="row">
+                            
+                        
+                                <div class="col-md-12">
+                                    <div class="offer offer-default">
+                                        @Html.Partial("_HardwareBox", product)
+                                    </div>
+                                </div>
+                            </div>
+
+                        
+                        }
+                    </div>       
+                }
+                else
+                {
+                    @*grid mode*@
+
+                    <div class="product-grid home-page-product-grid">
+                        <div class="row ">
+                    
+                            @foreach (var product in Model.Products)
+                            {
+
+                                <div class="col-md-4">
+                                    <div class="offer offer-default silde-show-offer pull-text-center">
+                                        @Html.Partial("_HardwareBox", product)
+                                    </div>
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+
+                
+                }
+            }
+            <div class="pagination-area">
+                <div class="pagination">
+                    @Html.Pager(Model.PagingFilteringContext).QueryParam("pagenumber")
+                </div>
+           
+            </div>
+   
+        </div>
+    </div>
+</div>
+
+
+  

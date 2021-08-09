@@ -1,0 +1,172 @@
+﻿@model ProductDetailsModel
+@using Nop.Core.Domain.Seo;
+@using Nop.Core.Infrastructure;
+@using Nop.Web.Models.Catalog;
+@using Nop.Core.Domain.Catalog
+@{
+    Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+
+    //title, meta
+    Html.AddTitleParts(!String.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
+    Html.AddMetaDescriptionParts(Model.MetaDescription);
+    Html.AddMetaKeywordParts(Model.MetaKeywords);
+
+    var canonicalUrlsEnabled = EngineContext.Current.Resolve<SeoSettings>().CanonicalUrlsEnabled;
+    if (canonicalUrlsEnabled)
+    {
+        var productUrl = Url.RouteUrl("Product", new { SeName = Model.SeName }, this.Request.Url.Scheme);
+        Html.AddCanonicalUrlParts(productUrl);
+    }
+    Html.AddScriptParts("~/Themes/NopShop/Scripts/jquery.sticky-kit.js");
+    var attributeChangeHandlerFuncName = string.Format("attribute_change_handler_{0}()", Model.Id);
+}
+<!--product breadcrumb-->
+@Html.Partial("_ProductBreadcrumb", Model.Breadcrumb)
+<script type="text/javascript">
+    $(document).ready(function () {
+        AffixApply();
+        $(window).resize(function () {
+            AffixApply();
+        });
+    });
+    function AffixApply() {
+        if (window.innerWidth > 1000) {
+            $("#box-gallery").stick_in_parent();
+        }
+        else {
+            $("#box-gallery").trigger("sticky_kit:detach");
+        }
+    }
+</script>
+<div class="features_items">
+    <!--features_items-->
+    <div class="product-details">
+        @using (Html.BeginRouteForm("Product", new { SeName = Model.SeName }, FormMethod.Post, new { id = "product-details-form" }))
+        {
+            <div itemscope itemtype="http://schema.org/Product" data-productid="@Model.Id">
+                <div class="row product-essential">
+                    @Html.Widget("productdetails_before_pictures", Model.Id)
+                    <!--product pictures-->
+
+
+                    <div class="col-md-4" id="box-gallery">
+                        @Html.Partial("_HardwareDetailsPictures", Model)
+                        @Html.Widget("productdetails_after_pictures", Model.Id)
+                    </div>
+                    <div class="col-md-8 overview ">
+                        <div class="product-information hardware-information">
+                            <h3>@Model.Name</h3>
+                             @Html.Partial("_ShareButton", Model)
+                            @if( Model.BrandModel!=null)
+                            {
+                                <p class="product-details-label "><b>Brand: </b><a href="@Url.RouteUrl("Brand", new { SeName = Model.BrandModel.SeName })" class="text-info">@Model.BrandModel.Name</a></p>
+                            }
+                            <!--rod width-->
+                            @if(Model.ProductType == ProductType.HeavyDutyCurtainRods || Model.ProductType == ProductType.DecorativeTraverseRods)
+                            {
+                                <div class="product-rod-width">
+                                    @if(Model.ProductType == ProductType.DecorativeTraverseRods)
+                                    {
+                                        <label class="text-prompt">Rod Width (Don't Include Finial Width)</label>
+                                    }
+                                    else
+                                    {
+                                        <label class="text-prompt">Rod Width</label>
+                                    }
+                                    <ul>
+                                        <li>@Html.DropDownList("product-rod-width", Model.AvailableRodWidths,new {onchange=attributeChangeHandlerFuncName})</li>
+                                        <li>@Html.DropDownList("product-rod-widtheven", Model.AvailableRodWidthEvens,new {onchange=attributeChangeHandlerFuncName})</li>
+                                    </ul>
+                                </div>
+                            }
+                            <!--attributes-->
+                            @{
+                            var dataDictAttributes = new ViewDataDictionary();
+                            dataDictAttributes.TemplateInfo.HtmlFieldPrefix = string.Format("attributes_{0}", Model.Id);
+                            @Html.Partial("_ProductAttributes", Model.ProductAttributes, dataDictAttributes)
+                            }
+                            
+                            <!--price & add to cart-->
+                            <h5 style="padding: 12px 0 0 0;font-size:20px;font-size: 20px;margin: 20px 0;">SUMMARY</h5>
+                            @{
+                            var dataDictPrice = new ViewDataDictionary();
+                            dataDictPrice.TemplateInfo.HtmlFieldPrefix = string.Format("price_{0}", Model.Id);
+                            @Html.Partial("_ProductPrice", Model.ProductPrice, dataDictPrice)
+
+                            var dataDictAddToCart = new ViewDataDictionary();
+                            dataDictAddToCart.TemplateInfo.HtmlFieldPrefix = string.Format("addtocart_{0}", Model.Id);
+                            @Html.Partial("_AddToCart", Model.AddToCart, dataDictAddToCart)
+                            }
+
+                        </div>
+                    </div>
+                    <div style="clear:both;"></div>                
+            </div>
+                <div class="row">
+                    <div class="category-tab shop-details-tab">
+                        <!--category-tab-->
+                        <div class="col-sm-12">
+                            <ul class="nav nav-tabs">
+                                @if (!String.IsNullOrEmpty(Model.FullDescription))
+                                {
+
+                                    <li class="active"><a href="#description" data-toggle="tab">Description</a></li>
+                                }
+                                @if (!String.IsNullOrEmpty(@Html.Partial("_ProductSpecifications", Model.ProductSpecifications).ToString()))
+                                {
+
+                                    <li><a href="#specification" data-toggle="tab">Specifications</a></li>
+                                }
+                                @if (!String.IsNullOrEmpty(@Html.Partial("_ProductTags", Model.ProductTags).ToString()))
+                                {
+                                    <li><a href="#tags" data-toggle="tab">Products Tags</a></li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="tab-content">
+                            @if (!String.IsNullOrEmpty(Model.FullDescription))
+                            {
+                                <div class="full-description tab-pane fade active in" id="description" itemprop="description">
+                                    <div class="custom-page-box-border-less-div">
+                                        @Html.Raw(Model.FullDescription)
+                                    </div>
+
+                                </div>
+
+                            }
+                            @if (!String.IsNullOrEmpty(@Html.Partial("_ProductSpecifications", Model.ProductSpecifications).ToString()))
+                            {
+                                <div class="full-description fade tab-pane" id="specification">
+                                    <div class="custom-page-box-border-less-div">
+                                        @Html.Partial("_ProductSpecifications", Model.ProductSpecifications)
+                                    </div>
+                                </div>
+                            }
+                            @if (!String.IsNullOrEmpty(@Html.Partial("_ProductTags", Model.ProductTags).ToString()))
+                            {
+                                <div class="full-description fade tab-pane" id="tags">
+                                    <div class="custom-page-box-border-less-div">
+                                        @Html.Partial("_ProductTags", Model.ProductTags)
+                                    </div>
+
+                                </div>
+                            }
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
+    <div class="product-collateral hide">
+
+        @Html.Action("ProductsAlsoPurchased", "Product", new { productId = Model.Id })
+        @Html.Action("RelatedProducts", "Product", new { productId = Model.Id })
+    </div>
+</div>
+
+
+
+

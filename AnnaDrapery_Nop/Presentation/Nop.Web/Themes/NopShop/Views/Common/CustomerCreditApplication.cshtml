@@ -1,0 +1,137 @@
+﻿@model CustomerCreditApplicationModel
+    @using Nop.Web.Models.Common;
+    @{
+        Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+
+        //title
+        Html.AddTitleParts("Customer Credit Application");
+    }
+
+    @using (Html.BeginForm())
+    {
+        <div class="custom-page-box-border-less-div">
+            <div class="breadcrumbs">
+                <ol class="breadcrumb">
+
+                    <li><a href="@Url.RouteUrl("HomePage")" title="@T("Categories.Breadcrumb.Top")">@T("Categories.Breadcrumb.Top")</a></li>
+                    <li class="active">Customer Credit Application</li>
+
+                </ol>
+            </div>
+        </div>
+        <div>
+            <h3 class="pull-left">
+                Customer Credit Application
+            </h3>
+            <a class="btn btn-primary pull-right" href="CUSTOMER CREDIT APPLICATION.pdf" target="_blank">Download Form (PDF)</a>
+        </div>
+        <div class="custom-page-box-div" style="clear:both">
+            @Html.AntiForgeryToken()
+            <div class="text-danger">
+                @ViewBag.Message
+                @Html.ValidationSummary(true)
+            </div>
+            <div class="product-details">
+                <table style="width:100%; border-spacing:5px; border-collapse:separate">
+                    <tr>
+                        <td style="width:20%"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>Company Name*</td>
+                        <td>@Html.TextBoxFor(x => x.CompanyName, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>Address*</td>
+                        <td>@Html.TextBoxFor(x => x.Address, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>City*</td>
+                        <td>@Html.TextBoxFor(x => x.City, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>State*</td>
+                        <td>@Html.TextBoxFor(x => x.State, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>ZipCode*</td>
+                        <td>@Html.TextBoxFor(x => x.ZipCode, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>@Html.DropDownListFor(x => x.SelectedText, Model.SelectItems, new { @class = "col-sm-7" })</td>
+                    </tr>
+
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>State Tax ID*</td>
+                        <td>@Html.TextBoxFor(x => x.StateTaxID, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>Phone*</td>
+                        <td>@Html.TextBoxFor(x => x.Phone, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>Cell*</td>
+                        <td>@Html.TextBoxFor(x => x.Cell, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>Fax:</td>
+                        <td>@Html.TextBoxFor(x => x.Fax, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>Email*</td>
+                        <td>@Html.TextBoxFor(x => x.Email, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>Trade Reference</strong></td>
+                    </tr>
+                    <tr>
+                        <td>1. Company</td>
+                        <td>@Html.TextBoxFor(x => x.Company1, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>Address</td>
+                        <td>@Html.TextBoxFor(x => x.Address1, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>Phone</td>
+                        <td>@Html.TextBoxFor(x => x.Phone1, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>Fax</td>
+                        <td>@Html.TextBoxFor(x => x.Fax1, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td>2. Company</td>
+                        <td>@Html.TextBoxFor(x => x.Company2, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>Address</td>
+                        <td>@Html.TextBoxFor(x => x.Address2, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>Phone</td>
+                        <td>@Html.TextBoxFor(x => x.Phone2, new { @class = "col-sm-7" })</td>
+                    </tr>
+                    <tr>
+                        <td><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>Fax</td>
+                        <td>@Html.TextBoxFor(x => x.Fax2, new { @class = "col-sm-7" })</td>
+                    </tr>
+                </table><br />
+                <div>The above information is for the purpose of obtaining credit. If warranted to be true, we are authorized to investigate on all information contained in this application.</div>
+                <div style="margin-left:170px">
+                    @Html.HiddenFor(m => m.DisplayCaptcha)
+                    @if (Model.DisplayCaptcha)
+                    {
+                        <div class="captcha-box">
+                            @Html.Raw(Html.GenerateCaptcha())
+                        </div>
+                    }
+                </div>
+                <div class="text-center"> <input type="submit" class="btn btn-primary" value="Submit" /></div>
+            </div>
+        </div>
+    }
+
+
+
+
+
+
+

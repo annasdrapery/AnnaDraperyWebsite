@@ -1,0 +1,106 @@
+﻿@model ProductDetailsModel.AddToCartModel
+@using Nop.Web.Models.Catalog;
+@using Nop.Core.Domain.Orders;
+@if (!Model.DisableBuyButton || Model.CustomerEntersPrice)
+{
+    if (Model.UpdatedShoppingCartItemId > 0)
+    {
+        @Html.HiddenFor(x => x.UpdatedShoppingCartItemId)
+    }
+        <div class="quantity-panel" style="width:33%; float:left;">
+        <table class="table-summary">
+            <tr>
+                <td style="border-bottom: solid 1px #ddd;border-right: solid 1px #ddd;">
+                    <span class="summary-title">QUANTITY</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="border-right: solid 1px #ddd;height:50px;">
+        @*Html.LabelFor(model => model.EnteredQuantity, new { @class = "qty-label" }, ":")*@
+            @if (Model.AllowedQuantities.Count > 0)
+            {
+                @Html.DropDownListFor(model => model.EnteredQuantity, Model.AllowedQuantities, new {@class = "qty-dropdown"}) 
+            }
+            else
+            {
+                var attributeChangeHandlerFuncName = string.Format("attribute_change_handler_{0}()", Model.ProductId);
+                @Html.TextBoxFor(model => model.EnteredQuantity, new { @class = "qty-input" })
+        
+                //when a customer clicks 'Enter' button we submit the "add to cart" button (if visible)
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        $("#@Html.FieldIdFor(model => model.EnteredQuantity)").keydown(function (event) {
+                            if (event.keyCode == 13) {
+                                $("#add-to-cart-button-@Model.ProductId").click();
+                                return false;
+                            }
+                        });
+                        $("#@Html.FieldIdFor(model => model.EnteredQuantity)").keyup(function (event) {
+                            if (isNaN($(this).val()) || $.trim($(this).val()) == "") {
+                                return false;
+                            }
+                            @attributeChangeHandlerFuncName;
+                        });
+                    });
+                </script>
+
+            }
+                </td>
+            </tr>
+        </table>  
+        </div>
+        <div class="shipping-panel" style="width:25%; float:left; display:none">
+        <table class="table-summary">
+            <tr>
+                <td style="border-bottom: solid 1px #ddd;border-right: solid 1px #ddd;">
+                    <span class="summary-title">SHIPPING FEE</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="border-right: solid 1px #ddd;height:50px;">
+                    <div class="product-price"><span class="custom-price shipping-fee-@(Model.ProductId)"></span></div>
+                </td>
+            </tr>
+        </table>
+        </div>
+        <div class="total-panel" style="width:33%; float:left;">
+        <table class="table-summary">
+            <tr>
+                <td style="border-bottom: solid 1px #ddd;">
+                    <span class="summary-title">TOTAL PRICE</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="height:50px;">
+                    <div class="product-price"><span class="custom-price total-@(Model.ProductId)"></span></div>
+                </td>
+            </tr>
+        </table>
+        </div>
+        <div class="add-to-cart-panel" style="text-align:right;clear:both;display:block;">
+            
+                        @{
+                    var addToCartText = "";
+                    if (Model.UpdatedShoppingCartItemId > 0)
+                    {
+                        addToCartText = T("ShoppingCart.AddToCart.Update").Text;
+                    }
+                    else
+                    {
+                        addToCartText = T("ShoppingCart.AddToCart").Text;
+                        if (Model.IsRental)
+                        {
+                            addToCartText = T("ShoppingCart.Rent").Text;
+                        }
+                        if (Model.AvailableForPreOrder)
+                        {
+                            addToCartText = T("ShoppingCart.PreOrder").Text;
+                        }
+                    }
+                    <button type="button" id="add-to-cart-button-@Model.ProductId" class="btn btn-primary cart add-to-cart-button" data-productid="@Model.ProductId" onclick="AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new { productId = Model.ProductId, shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart })', '#product-details-form');return false;"><i class="fa fa-shopping-cart fa-fw"></i> @addToCartText </button>
+                    
+                    }
+        </div>
+            
+    @Html.Widget("productdetails_add_info", Model.ProductId)
+}

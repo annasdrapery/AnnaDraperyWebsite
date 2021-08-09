@@ -1,0 +1,12 @@
+﻿@{
+    Layout = "~/Administration/Views/Shared/_AdminPopupLayout.cshtml";
+}
+@model PurchaseOrderModel
+@{    
+    //page title
+    ViewBag.Title = "Purchase Order "+Model.PONumber;
+}
+
+    <div>
+         @Html.Raw(Model.Content)
+    </div>

@@ -1,0 +1,150 @@
+﻿@{
+    Layout = "~/Views/Shared/_Root.cshtml";
+}
+<div class="container">
+    @Html.Widget("main_column_before")
+    @RenderBody()
+    @Html.Widget("main_column_after")
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("a.toggleChildren").click(function () {
+            var childPanelId = $(this).attr("childPanel");
+            if ($(this).children("span.expandChild").first().hasClass("hide")) {
+                $(this).children("span.expandChild").first().removeClass("hide");
+                $(this).children("span.collapseChild").first().addClass("hide");
+                $(this).parent().parent().parent().children(".panel-collapse").addClass("in");
+            }
+            else {
+                $(this).children("span.collapseChild").first().removeClass("hide");
+                $(this).children("span.expandChild").first().addClass("hide");
+                $(this).parent().parent().parent().children(".panel-collapse").removeClass("in");
+            }
+            return false;
+        });
+        $(".panel-body .seeMore").click(function () {
+            $(this).parent().children(".moreItems").removeClass("hide");
+            $(this).hide();
+        });
+        //display selected property hardware
+        $(".moreItems .option-list input[type='checkbox']").each(function () {
+            if ($(this).is(":checked", true)) {
+                $(this).parent().parent().parent().removeClass("hide");
+                $(this).parent().parent().parent().parent().children(".seeMore").hide();
+            }
+        });
+        //filter property
+        $("input.hardware-prop").change(function(){
+            //brand
+            var _filterParams = "", _filterCls = "", _filterBr = "", _filterFs = "", _filterCmp = "", _filterPmd = "", _filterPl = "", _filterPs = "", _filterBs = ""
+            , _filterIdm = "", _filterOdm = "", _filterAs = "", _filterRt = "", _filterDt = "", _filterRp = "", _filterAdjs = "";
+            
+            var _ptype = $(this).attr("ptype");
+            $("input.hardware-prop[ptype='" + _ptype + "'][value!='" + $(this).val() + "']").prop("checked", false);
+            $("input.hardware-prop:checked").each(function () {
+                switch ($(this).attr("ptype")) {
+                    case "cls":
+                        if (_filterCls == "") {
+                            _filterCls = "&cls=";
+                        }
+                        _filterCls += $(this).val() + ",";
+                        break;
+                    case "br":
+                        if (_filterBr == "") {
+                            _filterBr = "&br=";
+                        }
+                        _filterBr += $(this).val() + ",";
+                        break;
+                    case "fs":
+                        if (_filterFs == "") {
+                            _filterFs = "&fs=";
+                        }
+                        _filterFs += $(this).val() + ",";
+                        break;
+                    case "cmp":
+                        if (_filterCmp == "") {
+                            _filterCmp = "&cmp=";
+                        }
+                        _filterCmp += $(this).val() + ",";
+                        break;
+                    case "pdm":
+                        if (_filterPmd == "") {
+                            _filterPmd = "&pdm=";
+                        }
+                        _filterPmd += $(this).val() + ",";
+                        break;
+                    case "pl":
+                        if (_filterPl == "") {
+                            _filterPl = "&pl=";
+                        }
+                        _filterPl += $(this).val() + ",";
+                        break;
+                    case "ps":
+                        if (_filterPs == "") {
+                            _filterPs = "&ps=";
+                        }
+                        _filterPs += $(this).val() + ",";
+                        break;
+                    case "bs":
+                        if (_filterPs == "") {
+                            _filterPs = "&bs=";
+                        }
+                        _filterPs += $(this).val() + ",";
+                        break;
+                    case "odm":
+                        if (_filterOdm == "") {
+                            _filterOdm = "&odm=";
+                        }
+                        _filterOdm += $(this).val() + ",";
+                        break;
+                    case "idm":
+                        if (_filterIdm == "") {
+                            _filterIdm = "&idm=";
+                        }
+                        _filterIdm += $(this).val() + ",";
+                        break;
+                    case "as":
+                        if (_filterAs == "") {
+                            _filterAs = "&as=";
+                        }
+                        _filterAs += $(this).val() + ",";
+                        break;
+                    case "rt":
+                        if (_filterRt == "") {
+                            _filterRt = "&rt=";
+                        }
+                        _filterRt += $(this).val() + ",";
+                        break;
+                    case "dt":
+                        if (_filterDt == "") {
+                            _filterDt = "&dt=";
+                        }
+                        _filterDt += $(this).val() + ",";
+                        break;
+                    case "rp":
+                        if (_filterRp == "") {
+                            _filterRp = "&rp=";
+                        }
+                        _filterRp += $(this).val() + ",";
+                        break;
+                    case "adjs":
+                        if (_filterAdjs == "") {
+                            _filterAdjs = "&adjs=";
+                        }
+                        _filterAdjs += $(this).val() + ",";
+                        break;
+                }
+            });
+            
+            _filterParams = _filterBr + _filterCls + _filterCmp + _filterFs + _filterPmd + _filterPl + _filterPs + _filterBs + _filterIdm + _filterOdm + _filterAs + _filterRt + _filterDt + _filterRp + _filterAdjs;
+            if (_filterParams !="") {
+                _filterParams = "?" + _filterParams;
+            }
+            setLocation(location.href.split("?")[0] + _filterParams);
+        });
+    });
+</script>
+
+
+
+	

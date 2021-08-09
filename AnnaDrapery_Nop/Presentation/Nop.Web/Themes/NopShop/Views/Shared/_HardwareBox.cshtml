@@ -1,0 +1,106 @@
+﻿@model ProductOverviewModel
+@using Nop.Core
+@using Nop.Core.Domain.Orders
+@using Nop.Core.Domain.Tax
+@using Nop.Core.Infrastructure
+@using Nop.Web.Extensions
+@using Nop.Web.Models.Catalog;
+@using Nop.Core.Domain.Catalog;
+
+<div class="product-image-wrapper" data-productid="@Model.Id">
+    <div class="box-hardware">
+        <div class="product-img">
+            <img @if(Model.ProductType == ProductType.CompleteRodSets){<text>style="height:206px;"</text>} alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" 
+                onclick="window.location.href='@Url.RouteUrl("Product", new{SeName = Model.SeName})'"/>
+        </div>
+
+        @if(Model.ProductType == ProductType.CompleteRodSets)
+        {
+            <div class="product-img-list">
+            @foreach(var item in Model.ListPictureModel){
+                <img alt="@item.AlternateText" src="@item.ImageUrl" title="@item.Title"  />
+            }
+            </div>
+        }
+        <div class="detail-wrapper">
+        <div class="product-name">
+            <a href="@Url.RouteUrl("Product", new{SeName = Model.SeName})">@Model.Name</a>
+        </div>
+        <div class="product-brand">
+            Brand: <span class="highlight">@Model.BrandName</span>
+        </div>
+        <div class="product-pole-diameter">
+            @if(Model.ProductType != ProductType.HeavyDutyCurtainRods 
+                && Model.ProductType != ProductType.DecorativeTraverseRods  
+                && Model.ProductType != ProductType.Holdbacks 
+                && Model.ProductType != ProductType.BasicCurtainRods)
+            {
+            <text>This product fits drapery poles with a <span class="highlight">@Model.PoleDiameter</span> diameter.</text> 
+            }
+        </div>
+        <div class="product-price-wrapper">
+            <div class="product-style">
+            @if(Model.NumberOfBrackets>0 && Model.ProductType == ProductType.CompleteRodSets)
+            {
+                <div class="badge-wrap">
+				    <div class="bracket-badge">
+                        <span>@Model.NumberOfBrackets</span>
+				    </div>
+			    </div>
+            }
+            @if(Model.NumberOfPoles>0 && Model.ProductType == ProductType.CompleteRodSets)
+            {
+                <div class="badge-wrap">
+				    <div class="pole-badge">
+                        <span>@Model.NumberOfPoles</span>
+				    </div>
+			    </div>
+            }
+                <div style="clear:both;"></div>
+            @if(!String.IsNullOrEmpty(Model.PoleStyle) && (Model.ProductType == ProductType.Poles || Model.ProductType == ProductType.CompleteRodSets))
+            {
+                <div class="text-wrap">
+				    <div>@Model.PoleStyle</div>
+			    </div>
+            }
+            </div>
+            <div class="product-price">
+            Call For Price<br />
+            @if(Model.NumberOfPoles>0 && Model.ProductType == ProductType.CompleteRodSets)
+            {
+                <div style="font-size:13px;">(Without Ring)</div>
+            }
+            else
+            {
+                <text>@Model.Packaged</text>
+            }
+            </div>
+        </div>
+        <div class="product-colors">
+        @if(Model.ListColorPictureModel.Count>1){
+            var countColor = 0;
+            <ul>
+                @foreach(var item in Model.ListColorPictureModel)
+                {
+                    countColor++;
+                    if(countColor>20){
+                        break;}
+                    <li><img src="@item.ImageUrl" title="@item.Title"></li>
+                }
+            </ul>
+        }
+        </div>
+        </div>    
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+

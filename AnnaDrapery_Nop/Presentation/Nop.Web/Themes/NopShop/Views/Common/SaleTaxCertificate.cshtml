@@ -1,0 +1,279 @@
+﻿@model SaleTaxCertificateModel
+@using Nop.Web.Models.Common;
+@{
+    /**/
+
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+
+    //title
+    Html.AddTitleParts("Sale Tax Certificate");
+}
+
+@using (Html.BeginForm())
+{
+    <div class="custom-page-box-border-less-div">
+        <div class="breadcrumbs">
+            <ol class="breadcrumb">
+
+                <li><a href="@Url.RouteUrl("HomePage")" title="@T("Categories.Breadcrumb.Top")">@T("Categories.Breadcrumb.Top")</a></li>
+                <li class="active">Sale Tax Certificate</li>
+
+            </ol>
+        </div>
+    </div>
+    <div>
+        <h3 class="pull-left">
+            TEXAS SALES AND USE TAX RESALE CERTIFICATE
+        </h3>
+        <a class="btn btn-primary pull-right" href="Sale_Tax_Certificate.pdf" target="_blank">Download Form (PDF)</a>
+    </div>
+    <div class="custom-page-box-div" style="clear:both">
+        @Html.AntiForgeryToken()
+        <div class="text-danger">
+            @ViewBag.Message
+            @Html.ValidationSummary(true)
+        </div>
+        <div class="product-details" style="margin-bottom:0">
+            <table style="width:100%;">
+                <tr>
+                    <td style="width:43%">
+                        <label style="margin-top:5px;">Name of purchaser, firm or agency as shown on permit*</label>
+                    </td>
+                    <td>@Html.TextBoxFor(x => x.Purchaser1, new { @class = "col-sm-12" })</td>
+                </tr>
+                <tr>
+                    <td><label style="margin-top:5px;">Phone (Area code and number)*</label></td>
+                    <td>@Html.TextBoxFor(x => x.Phone1, new { @class = "col-sm-12" })</td>
+                </tr>
+                <tr>
+                    <td><label style="margin-top:5px;">Address (Street & number, P.O. Box or Route number)*</label></td>
+                    <td>@Html.TextBoxFor(x => x.Address1, new { @class = "col-sm-12" })</td>
+                </tr>
+                <tr>
+                    <td><label style="margin-top:5px;">City, State, ZIP code*</label></td>
+                    <td>@Html.TextBoxFor(x => x.CSZ, new { @class = "col-sm-12" })</td>
+                </tr>
+                <tr>
+                    <td><label style="margin-top:5px;">Texas Sales and Use Tax Permit Number (must contain 11 digits)*</label></td>
+                    <td>@Html.TextBoxFor(x => x.Tax, new { @class = "col-sm-12", @type = "number" })</td>
+                </tr>
+                <tr>
+                    <td><label style="margin-top:5px;">Out-of-state retailer's registration number or Federal Taxpayers Registry (RFC) number for retailers based in Mexico*</label></td>
+                    <td>
+                        @Html.TextBoxFor(x => x.RFC, new { @class = "col-sm-12" })
+                        <label style="font-style:italic">
+                            (Retailers based in Mexico must also provide a copy of their Mexico registration form to the seller.)
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label style="margin-top:5px;">
+                            I, the purchaser named above, claim the right to make a non-taxable purchase (for resale of the taxable items
+                            described below or on the attached order or invoice) from:
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label style="margin-top:5px;">
+                            Sellers*
+                        </label>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.Seller1, new { @class = "col-sm-12" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label style="margin-top:5px;">
+                            Street Address*
+                        </label>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.Street1, new { @class = "col-sm-12" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label style="margin-top:5px;">
+                            City, State, ZIP code*
+                        </label>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.CSZ1, new { @class = "col-sm-12" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label style="margin-top:5px;">
+                            Description of items to be purchased on the attached order or invoice
+                        </label>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.DescItem1, new { @class = "col-sm-12" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label style="margin-top:5px;">
+                            Description of the type of business activity generally engaged in or type of items normally sold by the purchaser
+                        </label>
+                    </td>
+                    <td style="vertical-align:top">
+                        @Html.TextBoxFor(x => x.DescType1, new { @class = "col-sm-12" })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label style="margin-top:5px;text-align:justify">
+                            The taxable items described above, or on the attached order or invoice, will be resold, rented or leased by me within the geographical
+                            limits of the United States of America, its territories and possessions or within the geographical limits of the United Mexican States, in
+                            their present form or attached to other taxable items to be sold.
+                        </label>
+                        <label style="margin-top:5px;text-align:justify">
+                            I understand that if I make any use of the items other than retention, demonstration or display while holding them for sale, lease or rental,
+                            I must pay sales tax on the items at the time of use based upon either the purchase price or the fair market rental value for the period
+                            of time used
+                        </label>
+                        <label style="margin-top:5px; font-style:italic;text-align:justify">
+                            I understand that it is a criminal offense to give a resale certificate to the seller for taxable items that I know, at the time of purchase, are
+                            purchased for use rather than for the purpose of resale, lease or rental, and depending on the amount of tax evaded, the offense may
+                            range from a Class C misdemeanor to a felony of the second degree.
+                        </label>
+                    </td>
+
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+    <div>
+        <h3>
+            TEXAS SALES AND USE TAX EXEMPTION CERTIFICATION
+        </h3>
+    </div>
+    <div class="custom-page-box-div" style="clear:both">
+        <div class="product-details" style="margin-bottom:0">
+            <table style="width:100%;">
+                <tr>
+                    <td style="width:43%">
+                        <label style="margin-top:5px;">Name of purchaser, firm or agency*</label>
+                    </td>
+                    <td>@Html.TextBoxFor(x => x.Purchaser2, new { @class = "col-sm-12" })</td>
+                </tr>
+                <tr>
+                    <td><label style="margin-top:5px;">Phone (Area code and number)*</label></td>
+                    <td>@Html.TextBoxFor(x => x.Phone2, new { @class = "col-sm-12" })</td>
+                </tr>
+                <tr>
+                    <td><label style="margin-top:5px;">Address (Street & number, P.O. Box or Route number)*</label></td>
+                    <td>@Html.TextBoxFor(x => x.Address2, new { @class = "col-sm-12" })</td>
+                </tr>
+                <tr>
+                    <td><label style="margin-top:5px;">City, State, ZIP code*</label></td>
+                    <td>@Html.TextBoxFor(x => x.CSZ2, new { @class = "col-sm-12" })</td>
+                </tr>
+               
+                <tr>
+                    <td colspan="2">
+                        <label style="margin-top:5px;">
+                            I, the purchaser named above, claim an exemption from payment of sales and use taxes (for the purchase of taxable
+                            items described below or on the attached order or invoice) from:
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label style="margin-top:5px;">
+                            Sellers*
+                        </label>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.Seller2, new { @class = "col-sm-12" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label style="margin-top:5px;">
+                            Street Address*
+                        </label>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.Street2, new { @class = "col-sm-12" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label style="margin-top:5px;">
+                            City, State, ZIP code*
+                        </label>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.CSZ3, new { @class = "col-sm-12" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label style="margin-top:5px;">
+                            Description of items to be purchased or on the attached order or invoice
+                        </label>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.DescItem2, new { @class = "col-sm-12" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label style="margin-top:5px;">
+                            Purchaser claims this exemption for the following reason
+                        </label>
+                    </td>
+                    <td style="vertical-align:top">
+                        @Html.TextBoxFor(x => x.Reason, new { @class = "col-sm-12" })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        
+                        <label style="margin-top:5px;text-align:justify">
+                            I understand that I will be liable for payment of all state and local sales or use taxes which may become due for failure to comply with
+                            the provisions of the Tax Code and/or all applicable law.
+                        </label>
+                        <label style="margin-top:5px; font-style:italic;text-align:justify">
+                            I understand that it is a criminal offense to give an exemption certificate to the seller for taxable items that I know, at the time of purchase,
+                            will be used in a manner other than that expressed in this certificate, and depending on the amount of tax evaded, the offense may range
+                            from a Class C misdemeanor to a felony of the second degree.
+                        </label>
+                    </td>
+
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+    <div style="margin-left:170px">
+        NOTE: This certificate cannot be issued for the purchase, lease, or rental of a motor vehicle.<br />
+        THIS CERTIFICATE DOES NOT REQUIRE A NUMBER TO BE VALID.<br />
+        Sales and Use Tax "Exemption Numbers" or "Tax Exempt" Numbers do not exist.
+    </div>
+    <div style="margin-left:170px">
+        @Html.HiddenFor(m=>m.DisplayCaptcha)
+        @if (Model.DisplayCaptcha)
+        {
+            <div class="captcha-box">
+                @Html.Raw(Html.GenerateCaptcha())
+            </div>
+        }
+    </div>
+    <div class="text-center"> <input type="submit" class="btn btn-primary" value="Submit" /></div>
+}
+
+
+
+
+
+
+

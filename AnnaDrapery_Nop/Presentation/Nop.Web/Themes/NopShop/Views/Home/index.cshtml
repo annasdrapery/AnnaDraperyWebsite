@@ -1,0 +1,38 @@
+@{
+    Layout = "~/Themes/NopShop/Views/Shared/_ColumnsTwoHomepage.cshtml";
+}
+@Html.Widget("home_page_top")
+@Html.Action("TopicBlock", "Topic", new { systemName = "HomePageText" })
+@*@Html.Action("HomepageCategories", "Catalog")
+@Html.Action("HomepageProducts", "Product")
+@Html.Action("HomepageBestSellers", "Product")
+@Html.Action("HomePageNews", "News")
+@Html.Action("HomePagePolls", "Poll")*@
+
+<div>
+    <img src="~/Content/Images/home-introduce.png" usemap="#planetmap" style="width:100%;"/>
+    <map name="planetmap">
+        <area shape="rect" coords="0,0,560,700" href="/custom-drapery" />
+        <area shape="rect" coords="560,0,840,350" href="/drapery-4-you"/>
+        <area shape="rect" coords="560,350,840,700" href="/drapery-hardware" />
+        <area shape="rect" coords="0,700,280,840" href="/ourworks" />
+        <area shape="rect" coords="280,700,560,840" href="/catalogs" />
+        <area shape="rect" coords="560,700,840,860" href="/contactus" />
+    </map>
+</div>
+<script type="text/javascript">
+    $(document).ready(function (e) {
+        $('img[usemap]').rwdImageMaps();
+    });
+</script>
+@Html.Widget("home_page_bottom")
+
+
+
+
+
+
+
+
+
+

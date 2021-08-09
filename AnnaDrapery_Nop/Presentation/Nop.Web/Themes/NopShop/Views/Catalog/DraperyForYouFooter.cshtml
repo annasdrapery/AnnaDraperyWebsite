@@ -1,0 +1,15 @@
+﻿@model CategoryNavigationModel
+@using Nop.Web.Models.Catalog;
+@if (Model.Categories.Count > 0)
+{
+   
+    <h2>@T("footer.draperyforyou")</h2>
+            <ul class="nav nav-pills nav-stacked">
+                @foreach (var cate in Model.Categories)
+                {
+                    <li><a href="@Url.RouteUrl("Category", new { SeName = cate.SeName })">@cate.Name</a>
+                    </li>
+                }
+            </ul>
+  
+}

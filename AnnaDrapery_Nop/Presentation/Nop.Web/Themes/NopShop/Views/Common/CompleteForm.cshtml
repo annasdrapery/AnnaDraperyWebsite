@@ -1,0 +1,38 @@
+﻿@model CompleteFormModel
+@using Nop.Web.Models.Common;
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+
+    //title
+    Html.AddTitleParts(Model.Title);
+}
+
+@using (Html.BeginForm())
+{
+<div class="custom-page-box-border-less-div"> 
+        <div class="breadcrumbs">
+            <ol class="breadcrumb">
+            
+                <li><a href="@Url.RouteUrl("HomePage")" title="@T("Categories.Breadcrumb.Top")">@T("Categories.Breadcrumb.Top")</a></li>
+                <li class="active">@Model.Title</li>
+            
+            </ol>
+        </div>
+    </div>
+<div class="custom-page-box-div"><!--features_items-->
+
+    <div class="product-details" style="text-align:center;">
+        @Model.ResultText
+        <div>
+            <a class="btn btn-primary" href="@Model.DownloadUrl" target="_blank">Download</a>
+        </div>
+    </div>
+</div>
+}
+
+
+
+
+
+
+
