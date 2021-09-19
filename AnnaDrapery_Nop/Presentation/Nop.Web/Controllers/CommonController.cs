@@ -617,28 +617,28 @@ namespace Nop.Web.Controllers
                             {
                                 // Get the first worksheet
                                 var currentWorksheet = workBook.Worksheets.First();
-                                currentWorksheet.Cells["AM3"].Value = model.Designer;
-                                currentWorksheet.Cells["CA3"].Value = model.OrderDate;
-                                currentWorksheet.Cells["AM4"].Value = model.SideMark;
-                                currentWorksheet.Cells["CA4"].Value = model.DueDate;
-                                currentWorksheet.Cells["AM6"].Value = model.Phone;
+                                currentWorksheet.Cells["AO3"].Value = model.Designer;
+                                currentWorksheet.Cells["BZ3"].Value = model.OrderDate;
+                                currentWorksheet.Cells["AO4"].Value = model.SideMark;
+                                currentWorksheet.Cells["BZ4"].Value = model.DueDate;
+                                currentWorksheet.Cells["AO6"].Value = model.Phone;
                                 var i = 10;
                                 foreach (var dt in details)
                                 {
                                     i++;
                                     currentWorksheet.Cells["C" + i].Value = dt.RoomLocation;
-                                    currentWorksheet.Cells["O" + i].Value = dt.Qty;
+                                    currentWorksheet.Cells["M" + i].Value = dt.Qty;
                                     
-                                    currentWorksheet.Cells["V" + i].Value = dt.FinishedWidth;
-                                    currentWorksheet.Cells["AD" + i].Value = dt.NoOfWidth;
-                                    currentWorksheet.Cells["AE" + i].Value = dt.FinishedLength;
-                                    currentWorksheet.Cells["AF" + i].Value = dt.TopHeader;
-                                    currentWorksheet.Cells["AM" + i].Value = dt.TopPocket;
-                                    currentWorksheet.Cells["AT" + i].Value = dt.BottomHeader;
+                                    currentWorksheet.Cells["R" + i].Value = dt.FinishedWidth;
+                                    currentWorksheet.Cells["X" + i].Value = dt.NoOfWidth;
+                                    currentWorksheet.Cells["AC" + i].Value = dt.FinishedLength;
+                                    currentWorksheet.Cells["AI" + i].Value = dt.TopHeader;
+                                    currentWorksheet.Cells["AO" + i].Value = dt.TopPocket;
+                                    currentWorksheet.Cells["AU" + i].Value = dt.BottomHeader;
                                     currentWorksheet.Cells["BA" + i].Value = dt.BottomPocket;
 
-                                    currentWorksheet.Cells["BH" + i].Value = dt.FabricNameColor;
-                                    currentWorksheet.Cells["CB" + i].Value = dt.LiningNameColor;
+                                    currentWorksheet.Cells["BG" + i].Value = dt.FabricNameColor;
+                                    currentWorksheet.Cells["CA" + i].Value = dt.LiningNameColor;
                                     
                                 }
                             }
